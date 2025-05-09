@@ -6,13 +6,3 @@ terraform {
     }
   }
 }
-
-provider "cloudflare" {
-  api_token = var.cloudflare_api_token
-}
-
-# Configure provider alias for modules if needed
-provider "cloudflare" {
-  alias     = "main"
-  api_token = var.cloudflare_api_token
-}
