@@ -19,19 +19,6 @@ variable "cloudflare_bot_management" {
   }
 }
 
-variable "records" {
-  type = list(object({
-    name     = string
-    type     = string
-    value    = string
-    ttl      = optional(number, 1)
-    proxied  = optional(bool, true)
-    priority = optional(number)
-    comment  = optional(string)
-  }))
-  description = "List of DNS records to manage."
-}
-
 variable "zones" {
   description = "List of DNS zones to manage"
   type = list(object({
