@@ -102,17 +102,3 @@ variable "zone_name" {
   description = "The zone name to manage resources for"
   type        = string
 }
-
-variable "dns_records" {
-  description = "List of DNS records to manage"
-  type = list(object({
-    name     = string
-    type     = string
-    value    = string
-    ttl      = optional(number, 1)
-    proxied  = optional(bool, true)
-    priority = optional(number)
-    comment  = optional(string)
-  }))
-  default = []
-}
