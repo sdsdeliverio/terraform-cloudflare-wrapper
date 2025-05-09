@@ -8,11 +8,9 @@ terraform {
 }
 
 resource "cloudflare_bot_management" "this" {
-  ai_bots_protection = "block"
-  crawler_protection = "enabled"
-  enable_js         = var.cloudflare_bot_management.enable_js
-  fight_mode        = var.cloudflare_bot_management.fight_mode
-  zone_id          = var.zone.id
+  zone_id = var.zone.id
+  fight_mode = var.cloudflare_bot_management.fight_mode
+  enable_js  = var.cloudflare_bot_management.enable_js
 
   lifecycle {
     prevent_destroy = true
@@ -32,7 +30,7 @@ resource "cloudflare_dns_record" "this" {
     
   zone_id  = var.zone.id
   type     = each.value.type
-  content  = each.value.value
+  value    = each.value.value
   ttl      = each.value.proxied ? 1 : each.value.ttl
   proxied  = each.value.proxied
   comment  = each.value.comment
