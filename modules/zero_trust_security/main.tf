@@ -1,11 +1,4 @@
-terraform {
-  required_providers {
-    cloudflare = {
-      source  = "cloudflare/cloudflare"
-      version = "5.4.0"
-    }
-  }
-}
+
 
 # Access Application
 resource "cloudflare_access_application" "app" {

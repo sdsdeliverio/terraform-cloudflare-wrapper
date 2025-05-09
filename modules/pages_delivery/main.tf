@@ -1,11 +1,4 @@
-terraform {
-  required_providers {
-    cloudflare = {
-      source  = "cloudflare/cloudflare"
-      version = "5.4.0"
-    }
-  }
-}
+
 
 # Pages Project
 resource "cloudflare_pages_project" "project" {

@@ -1,11 +1,4 @@
-terraform {
-  required_providers {
-    cloudflare = {
-      source  = "cloudflare/cloudflare"
-      version = "5.4.0"
-    }
-  }
-}
+
 
 # Bot Management
 resource "cloudflare_bot_management" "bot" {

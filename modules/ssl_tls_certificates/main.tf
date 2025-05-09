@@ -1,11 +1,3 @@
-terraform {
-  required_providers {
-    cloudflare = {
-      source  = "cloudflare/cloudflare"
-      version = "5.4.0"
-    }
-  }
-}
 
 # Certificate Pack
 resource "cloudflare_certificate_pack" "cert_pack" {

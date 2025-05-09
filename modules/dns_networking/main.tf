@@ -1,11 +1,3 @@
-terraform {
-  required_providers {
-    cloudflare = {
-      source  = "cloudflare/cloudflare"
-      version = "5.4.0"
-    }
-  }
-}
 
 resource "cloudflare_bot_management" "this" {
   zone_id = var.zone.id
