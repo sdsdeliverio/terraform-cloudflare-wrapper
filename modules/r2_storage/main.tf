@@ -1,4 +1,11 @@
-
+terraform {
+  required_providers {
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "5.4.0"
+    }
+  }
+}
 
 # R2 Bucket
 resource "cloudflare_r2_bucket" "bucket" {
