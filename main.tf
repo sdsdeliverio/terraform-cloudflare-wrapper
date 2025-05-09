@@ -8,15 +8,15 @@ locals {
   )
 }
 
-# Account Authentication Module
-module "account_authentication" {
-  count  = var.enabled_modules["account_authentication"] ? 1 : 0
-  source = "./modules/account_authentication"
+# # Account Authentication Module
+# module "account_authentication" {
+#   count  = var.enabled_modules["account_authentication"] ? 1 : 0
+#   source = "./modules/account_authentication"
 
-  account_name   = try(var.account_auth_config.name, null)
-  account_type   = try(var.account_auth_config.type, "standard")
-  api_tokens     = try(var.account_auth_config.api_tokens, [])
-  account_members = try(var.account_auth_config.members, [])
+#   account_name   = try(var.account_auth_config.name, null)
+#   account_type   = try(var.account_auth_config.type, "standard")
+#   api_tokens     = try(var.account_auth_config.api_tokens, [])
+#   account_members = try(var.account_auth_config.members, [])
 }
 
 # DNS Networking Module
