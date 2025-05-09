@@ -1,0 +1,4 @@
+*.tf text=auto eol=lf
+*.md text=auto eol=lf
+.gitignore text=auto eol=lf
+.gitattributes text=auto eol=lf
