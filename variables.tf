@@ -1,8 +1,8 @@
-variable "cloudflare_api_token" {
-  description = "The API token for Cloudflare authentication"
-  type        = string
-  sensitive   = true
-}
+# variable "cloudflare_api_token" {
+#   description = "The API token for Cloudflare authentication"
+#   type        = string
+#   sensitive   = true
+# }
 
 variable "environment" {
   description = "Environment name"
