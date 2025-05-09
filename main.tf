@@ -17,7 +17,7 @@ locals {
 #   account_type   = try(var.account_auth_config.type, "standard")
 #   api_tokens     = try(var.account_auth_config.api_tokens, [])
 #   account_members = try(var.account_auth_config.members, [])
-}
+# }
 
 # DNS Networking Module
 module "dns_networking" {
@@ -28,7 +28,7 @@ module "dns_networking" {
   zones = [{
     zone_name = var.zone_name
     zone_id   = var.zone_id
-    records   = var.dns_records
+    records   = var.records
   }]
 }
 
