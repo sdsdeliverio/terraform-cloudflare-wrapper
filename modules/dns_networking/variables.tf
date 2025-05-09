@@ -5,14 +5,6 @@ variable "account_id" {
   type        = string
 }
 
-variable "zone" {
-  type = object({
-    name = string
-    id   = string
-  })
-  description = "Zone Id & Name"
-}
-
 variable "cloudflare_bot_management" {
   type = object({
     ai_bots_protection = optional(string, "block")
@@ -20,6 +12,11 @@ variable "cloudflare_bot_management" {
     enable_js         = optional(bool, true)
   })
   description = "CF Bot Management Configs"
+  default = {
+    ai_bots_protection = "block"
+    fight_mode        = true
+    enable_js         = true
+  }
 }
 
 variable "records" {
