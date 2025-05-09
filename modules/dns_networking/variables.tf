@@ -31,7 +31,7 @@ variable "zones" {
   }))
 }
 
-variable "dns_records" {
+variable "records" {
   description = "List of DNS records to manage"
   type = list(object({
     zone_name = string
