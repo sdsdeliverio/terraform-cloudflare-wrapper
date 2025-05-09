@@ -27,7 +27,7 @@ module "dns_networking" {
   account_id = var.account_id
   zones      = try(var.dns_networking_config.zones, [])
   dns_records = try(var.dns_networking_config.dns_records, [])
-# }
+}
 
 # # Security Bot Management Module
 # module "security_bot_management" {
