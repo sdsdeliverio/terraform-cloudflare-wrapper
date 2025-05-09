@@ -1,0 +1,12 @@
+# Terraform configuration for security_bot_management
+## Resources in this module:
+# cloudflare_firewall_rule
+# cloudflare_bot_management
+# cloudflare_user_agent_blocking_rule
+# cloudflare_leaked_credential_check
+# cloudflare_leaked_credential_check_rule
+# cloudflare_page_shield_policy
+# cloudflare_authenticated_origin_pulls
+# cloudflare_authenticated_origin_pulls_certificate
+# cloudflare_authenticated_origin_pulls_settings
+
