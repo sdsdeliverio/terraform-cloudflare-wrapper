@@ -25,11 +25,8 @@ module "dns_networking" {
   source = "./modules/dns_networking"
 
   account_id = var.account_id
-  zones = [{
-    zone_name = var.zone_name
-    zone_id   = var.zone_id
-    records   = var.records
-  }]
+  zones      = var.dns_networking_config.zones
+  records    = var.dns_networking_config.records
 }
 
 # # Security Bot Management Module

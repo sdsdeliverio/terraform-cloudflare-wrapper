@@ -7,31 +7,25 @@ terraform {
   }
 }
 
-# resource "cloudflare_bot_management" "this" {
-#   zone_id = var.zone.id
-#   fight_mode = var.cloudflare_bot_management.fight_mode
-#   enable_js  = var.cloudflare_bot_management.enable_js
-
-#   lifecycle {
-#     prevent_destroy = true
-#   }
-# }
-
+locals {
+  # Create a map of zone_key to zone details for easier lookup
+  zones_map = { for zone in var.zones : zone.name => zone }
+}
 
 resource "cloudflare_dns_record" "this" {
   for_each = { for record in flatten([
-    for zone in var.zones : [
-      for idx, record in zone.records : {
-        key     = "${zone.zone_name}-${record.name}-${record.type}-${idx}"
-        zone_id = zone.zone_id
-        name    = record.name
-        type    = record.type
-        value   = record.value
-        ttl     = record.ttl
-        proxied = try(record.proxied, false)
-        comment = try(record.comment, null)
-        priority = try(record.priority, null)
-        zone_name = zone.zone_name
+    for config in var.dns_networking_config : [
+      for idx, record in config.records : {
+        key       = "${config.zone_key}-${record.name}-${record.type}-${idx}"
+        zone_id   = local.zones_map[config.zone_key].id
+        name      = record.name
+        type      = record.type
+        content   = record.content
+        ttl       = record.ttl
+        proxied   = try(record.proxied, false)
+        comment   = try(record.comment, "Managed by Terraform")
+        priority  = try(record.priority, null)
+        zone_name = config.zone_key
       }
     ]
   ]) : record.key => record }
@@ -44,7 +38,7 @@ resource "cloudflare_dns_record" "this" {
     
   zone_id  = each.value.zone_id
   type     = each.value.type
-  value    = each.value.value
+  content  = each.value.content
   ttl      = each.value.proxied ? 1 : each.value.ttl
   proxied  = each.value.proxied
   comment  = each.value.comment

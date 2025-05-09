@@ -5,44 +5,46 @@ variable "account_id" {
   type        = string
 }
 
-variable "cloudflare_bot_management" {
-  type = object({
-    ai_bots_protection = optional(string, "block")
-    fight_mode        = optional(bool, true)
-    enable_js         = optional(bool, true)
-  })
-  description = "CF Bot Management Configs"
-  default = {
-    ai_bots_protection = "block"
-    fight_mode        = true
-    enable_js         = true
-  }
-}
-
 variable "zones" {
   description = "List of DNS zones to manage"
   type = list(object({
-    name                = string
-    paused             = optional(bool, false)
-    plan               = optional(string, "free")
-    type               = optional(string, "full")
+    name                 = string
+    id                   = string
+    paused               = optional(bool, false)
+    plan                 = optional(string, "free")
+    type                 = optional(string, "full")
     dns_settings_enabled = optional(bool, true)
-    enable_dnssec      = optional(bool, false)
+    enable_dnssec        = optional(bool, false)
   }))
 }
 
 variable "records" {
-  description = "List of DNS records to manage"
+  description = "List of zones and their DNS records configurations"
   type = list(object({
-    zone_name = string
-    name      = string
-    type      = string
-    content   = string
-    ttl       = optional(number, 1)
-    proxied   = optional(bool, true)
-    priority  = optional(number)
+    zone_key = string
+    name     = string
+    type     = string
+    content  = string
+    ttl      = number
+    proxied  = optional(bool, false)
+    priority = optional(number)
+    comment  = optional(string, "Managed by Terraform")
   }))
   default = []
+}
+
+variable "cloudflare_bot_management" {
+  type = object({
+    ai_bots_protection = optional(string, "block")
+    fight_mode         = optional(bool, true)
+    enable_js          = optional(bool, true)
+  })
+  description = "CF Bot Management Configs"
+  default = {
+    ai_bots_protection = "block"
+    fight_mode         = true
+    enable_js          = true
+  }
 }
 
 variable "dns_firewall_rules" {

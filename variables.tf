@@ -25,30 +25,58 @@ variable "tags" {
 variable "enabled_modules" {
   description = "Map of modules to enable/disable"
   type        = map(bool)
-  default     = {
+  default = {
     account_authentication  = false
-    dns_networking         = false
+    dns_networking          = false
     security_bot_management = false
-    ssl_tls_certificates   = false
-    workers               = false
-    zero_trust_security   = false
-    pages_delivery       = false
-    r2_storage          = false
+    ssl_tls_certificates    = false
+    workers                 = false
+    zero_trust_security     = false
+    pages_delivery          = false
+    r2_storage              = false
   }
 }
 
-# Account Authentication Module Variables
-variable "account_auth_config" {
-  description = "Configuration for the account authentication module"
-  type        = any
-  default     = {}
+variable "dns_networking_config" {
+  description = "List of zones and their DNS records configurations"
+  type = {
+    zones = list(object({
+      name                 = string
+      id                   = string
+      paused               = optional(bool, false)
+      plan                 = optional(string, "free")
+      type                 = optional(string, "full")
+      dns_settings_enabled = optional(bool, true)
+      enable_dnssec        = optional(bool, false)
+    }))
+    records = optional(list(object({
+      zone_key = string
+      records = list(object({
+        name     = string
+        type     = string
+        content  = string
+        ttl      = number
+        proxied  = optional(bool, false)
+        priority = optional(number)
+        comment  = optional(string, "Managed by Terraform")
+      }))
+    })), [])
+  }
+  default = []
 }
 
-# DNS Networking Module Variables
-variable "dns_networking_config" {
-  description = "Configuration for the DNS networking module"
-  type        = any
-  default     = {}
+variable "cloudflare_bot_management" {
+  description = "Bot management configuration"
+  type = object({
+    ai_bots_protection = optional(string, "block")
+    fight_mode         = optional(bool, true)
+    enable_js          = optional(bool, true)
+  })
+  default = {
+    ai_bots_protection = "block"
+    fight_mode         = true
+    enable_js          = true
+  }
 }
 
 # Security Bot Management Module Variables
