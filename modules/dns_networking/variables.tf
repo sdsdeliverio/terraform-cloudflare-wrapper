@@ -5,6 +5,36 @@ variable "account_id" {
   type        = string
 }
 
+variable "zone" {
+  type = object({
+    name = string
+    id   = string
+  })
+  description = "Zone Id & Name"
+}
+
+variable "cloudflare_bot_management" {
+  type = object({
+    ai_bots_protection = optional(string, "block")
+    fight_mode        = optional(bool, true)
+    enable_js         = optional(bool, true)
+  })
+  description = "CF Bot Management Configs"
+}
+
+variable "records" {
+  type = list(object({
+    name     = string
+    type     = string
+    value    = string
+    ttl      = optional(number, 1)
+    proxied  = optional(bool, true)
+    priority = optional(number)
+    comment  = optional(string)
+  }))
+  description = "List of DNS records to manage."
+}
+
 variable "zones" {
   description = "List of DNS zones to manage"
   type = list(object({
