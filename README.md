@@ -47,11 +47,14 @@ terraform-cloudflare/
 ├── outputs.tf
 ├── versions.tf
 ├── modules/
-│   └── account_authentication/
-│       ├── README.md
-│       ├── main.tf
-│       ├── variables.tf
-│       └── outputs.tf
+│   ├── account_authentication/
+│   ├── dns_networking/
+│   ├── security_bot_management/
+│   ├── ssl_tls_certificates/
+│   ├── workers/
+│   ├── zero_trust_security/
+│   ├── pages_delivery/
+│   └── r2_storage/
 └── examples/
     └── complete/
         ├── main.tf

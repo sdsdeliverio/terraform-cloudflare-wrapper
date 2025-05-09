@@ -1,0 +1,25 @@
+terraform {
+  required_providers {
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "5.4.0"
+    }
+  }
+}
+
+variable "module_enabled" {
+  description = "Whether to create the module's resources"
+  type        = bool
+  default     = true
+}
+
+variable "module_tags" {
+  description = "Tags to apply to resources"
+  type        = map(string)
+  default     = {}
+}
+
+locals {
+  enabled = var.module_enabled
+  tags    = var.module_tags
+}
