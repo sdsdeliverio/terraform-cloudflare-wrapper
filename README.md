@@ -1,90 +1,194 @@
 # Terraform Cloudflare Module
 
-This Terraform module manages Cloudflare resources and authentication. It can be used as a remote module in other Terraform configurations.
+This Terraform module provides a comprehensive solution for managing Cloudflare resources. It's organized into submodules that can be enabled or disabled as needed.
+
+## Features
+
+- Account Authentication & Management
+- DNS & Networking Configuration
+- Security & Bot Management
+- SSL/TLS Certificate Management
+- Workers & KV Storage
+- Zero Trust Security
+- Pages & Content Delivery
+- R2 Storage Management
 
 ## Usage
 
 ```hcl
 module "cloudflare" {
-  source = "git::https://github.com/your-username/terraform-cloudflare.git?ref=v1.0.0"
+  source = "git::https://github.com/username/terraform-cloudflare.git?ref=v1.0.0"
 
   cloudflare_api_token = var.cloudflare_api_token
-  module_enabled      = true
-  module_tags        = {
-    environment = "production"
-    managed_by  = "terraform"
+  account_id          = var.account_id
+  environment         = "production"
+
+  # Enable/disable specific modules
+  enabled_modules = {
+    account_authentication  = true
+    dns_networking         = true
+    security_bot_management = false
+    ssl_tls_certificates   = true
+    workers               = false
+    zero_trust_security   = true
+    pages_delivery       = false
+    r2_storage          = true
   }
-}
 
-module "cloudflare_auth" {
-  source = "git::https://github.com/your-username/terraform-cloudflare.git//modules/account_authentication?ref=v1.0.0"
+  # Module-specific configurations
+  account_auth_config = {
+    name = "My Cloudflare Account"
+    type = "standard"
+    api_tokens = [
+      {
+        name = "terraform-token"
+        permissions = ["DNS Write", "Zone Write"]
+      }
+    ]
+  }
 
-  account_name   = "My Cloudflare Account"
-  api_token_name = "terraform-managed-token"
-  enforce_2fa    = true
-  
-  account_members = [
-    {
-      email = "user@example.com"
-      roles = ["Administrator"]
-    }
-  ]
+  dns_networking_config = {
+    zones = [
+      {
+        name = "example.com"
+        plan = "free"
+      }
+    ]
+    records = [
+      {
+        zone_name = "example.com"
+        name      = "www"
+        type      = "A"
+        value     = "192.0.2.1"
+        proxied   = true
+      }
+    ]
+  }
 }
 ```
 
 ## Requirements
 
 - Terraform >= 1.0.0
-- Cloudflare Provider >= 4.0.0
+- Cloudflare Provider >= 5.4.0
 
-## Module Structure
+## Modules
 
-```plaintext
-terraform-cloudflare/
-├── README.md
-├── provider.tf
-├── variables.tf
-├── outputs.tf
-├── versions.tf
-├── modules/
-│   ├── account_authentication/
-│   ├── dns_networking/
-│   ├── security_bot_management/
-│   ├── ssl_tls_certificates/
-│   ├── workers/
-│   ├── zero_trust_security/
-│   ├── pages_delivery/
-│   └── r2_storage/
-└── examples/
-    └── complete/
-        ├── main.tf
-        ├── variables.tf
-        └── outputs.tf
-```
+### Account Authentication (`account_authentication`)
+Manages Cloudflare account settings, API tokens, and member access.
+
+### DNS Networking (`dns_networking`)
+Handles DNS zones, records, and network configurations.
+
+### Security Bot Management (`security_bot_management`)
+Manages firewall rules, bot protection, and security settings.
+
+### SSL/TLS Certificates (`ssl_tls_certificates`)
+Handles SSL/TLS certificates and custom hostname configurations.
+
+### Workers (`workers`)
+Manages Cloudflare Workers, KV storage, and routing.
+
+### Zero Trust Security (`zero_trust_security`)
+Configures Zero Trust access policies, applications, and tunnels.
+
+### Pages Delivery (`pages_delivery`)
+Manages Cloudflare Pages projects and custom domains.
+
+### R2 Storage (`r2_storage`)
+Handles R2 bucket creation and configuration.
 
 ## Inputs
 
 | Name | Description | Type | Required | Default |
 |------|-------------|------|----------|---------|
-| cloudflare_api_token | The API token for Cloudflare authentication | string | yes | - |
-| module_enabled | Whether to create the module's resources | bool | no | true |
-| module_tags | A map of tags to add to all resources | map(string) | no | {} |
+| cloudflare_api_token | API token for authentication | string | yes | - |
+| account_id | Cloudflare account ID | string | yes | - |
+| environment | Environment name | string | no | "production" |
+| enabled_modules | Map of modules to enable/disable | map(bool) | no | All true |
+| tags | Resource tags | map(string) | no | {} |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| module_enabled | Whether the module is enabled |
-| module_tags | Tags applied to the module's resources |
+| account_auth | Account authentication outputs |
+| dns_networking | DNS and networking outputs |
+| security_bot | Security and bot management outputs |
+| ssl_tls | SSL/TLS certificate outputs |
+| workers | Workers configuration outputs |
+| zero_trust | Zero Trust security outputs |
+| pages_delivery | Pages delivery outputs |
+| r2_storage | R2 storage outputs |
 
-## Versioning
+## Example Configurations
 
-This module follows [Semantic Versioning](https://semver.org/). For the versions available, see the tags on this repository.
+### Basic DNS Management
+```hcl
+module "cloudflare" {
+  source = "git::https://github.com/username/terraform-cloudflare.git?ref=v1.0.0"
 
-## Authors
+  cloudflare_api_token = var.cloudflare_api_token
+  account_id          = var.account_id
 
-Your Name (@your-github-username)
+  enabled_modules = {
+    dns_networking = true
+  }
+
+  dns_networking_config = {
+    zones = [{
+      name = "example.com"
+      plan = "free"
+    }]
+    records = [{
+      zone_name = "example.com"
+      name      = "www"
+      type      = "A"
+      value     = "192.0.2.1"
+      proxied   = true
+    }]
+  }
+}
+```
+
+### Zero Trust Security Setup
+```hcl
+module "cloudflare" {
+  source = "git::https://github.com/username/terraform-cloudflare.git?ref=v1.0.0"
+
+  cloudflare_api_token = var.cloudflare_api_token
+  account_id          = var.account_id
+
+  enabled_modules = {
+    zero_trust_security = true
+  }
+
+  zero_trust_config = {
+    applications = [{
+      name   = "internal-app"
+      domain = "app.example.com"
+      type   = "self_hosted"
+    }]
+    policies = [{
+      name = "allow-internal"
+      application_id = "app_id"
+      decision      = "allow"
+      include = {
+        group = ["internal-users"]
+      }
+    }]
+  }
+}
+```
+
+## Development
+
+To contribute to this module:
+
+1. Fork the repository
+2. Create a feature branch
+3. Submit a pull request
 
 ## License
 
-MIT
+This module is licensed under the MIT License. See the LICENSE file for details.
