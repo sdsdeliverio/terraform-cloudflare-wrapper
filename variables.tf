@@ -132,6 +132,53 @@ variable "zero_trust_config" {
         network         = string
         comment         = string
       })), [])
+      cloudflared_config = optional(object({
+        ingress = list(object({
+          hostname = string
+          service  = string
+          origin_request = optional(object({
+            access = optional(object({
+              aud_tag   = optional(list(string))
+              team_name = optional(string)
+              required  = optional(bool)
+            }))
+            ca_pool                  = optional(string)
+            connect_timeout          = optional(number)
+            disable_chunked_encoding = optional(bool)
+            http2_origin             = optional(bool)
+            http_host_header         = optional(string)
+            keep_alive_connections   = optional(number)
+            keep_alive_timeout       = optional(number)
+            no_happy_eyeballs        = optional(bool)
+            no_tls_verify            = optional(bool)
+            origin_server_name       = optional(string)
+            proxy_type               = optional(string)
+            tcp_keep_alive           = optional(number)
+            tls_timeout              = optional(number)
+          }))
+          path = optional(string)
+        }))
+        origin_request = object({
+          access = optional(object({
+            aud_tag   = optional(list(string))
+            team_name = optional(string)
+            required  = optional(bool)
+          }))
+          ca_pool                  = optional(string)
+          connect_timeout          = optional(number)
+          disable_chunked_encoding = optional(bool)
+          http2_origin             = optional(bool)
+          http_host_header         = optional(string)
+          keep_alive_connections   = optional(number)
+          keep_alive_timeout       = optional(number)
+          no_happy_eyeballs        = optional(bool)
+          no_tls_verify            = optional(bool)
+          origin_server_name       = optional(string)
+          proxy_type               = optional(string)
+          tcp_keep_alive           = optional(number)
+          tls_timeout              = optional(number)
+        })
+      }))
     })), {})
     virtual_networks = optional(map(object({
       name               = string

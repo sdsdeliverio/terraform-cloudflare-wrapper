@@ -328,16 +328,63 @@ variable "gateway_settings" {
 variable "tunnels" {
   description = "List of Zero Trust tunnels"
   type = map(object({
-    name = string
+    name       = string
     config_src = optional(string, "cloudflare")
-   
+
     routes = optional(list(object({
       virtual_network = string
-      network = string
-      comment  = string
+      network         = string
+      comment         = string
     })), [])
+    cloudflared_config = optional(object({
+      ingress = list(object({
+        hostname = string
+        service  = string
+        origin_request = optional(object({
+          access = optional(object({
+            aud_tag   = optional(list(string))
+            team_name = optional(string)
+            required  = optional(bool)
+          }))
+          ca_pool                  = optional(string)
+          connect_timeout          = optional(number)
+          disable_chunked_encoding = optional(bool)
+          http2_origin             = optional(bool)
+          http_host_header         = optional(string)
+          keep_alive_connections   = optional(number)
+          keep_alive_timeout       = optional(number)
+          no_happy_eyeballs        = optional(bool)
+          no_tls_verify            = optional(bool)
+          origin_server_name       = optional(string)
+          proxy_type               = optional(string)
+          tcp_keep_alive           = optional(number)
+          tls_timeout              = optional(number)
+        }))
+        path = optional(string)
+      }))
+      origin_request = object({
+        access = optional(object({
+          aud_tag   = optional(list(string))
+          team_name = optional(string)
+          required  = optional(bool)
+        }))
+        ca_pool                  = optional(string)
+        connect_timeout          = optional(number)
+        disable_chunked_encoding = optional(bool)
+        http2_origin             = optional(bool)
+        http_host_header         = optional(string)
+        keep_alive_connections   = optional(number)
+        keep_alive_timeout       = optional(number)
+        no_happy_eyeballs        = optional(bool)
+        no_tls_verify            = optional(bool)
+        origin_server_name       = optional(string)
+        proxy_type               = optional(string)
+        tcp_keep_alive           = optional(number)
+        tls_timeout              = optional(number)
+      })
+    }))
   }))
-  default   = {}
+  default = {}
 }
 
 variable "virtual_networks" {
@@ -354,10 +401,10 @@ variable "cloudflare_secrets" {
   description = "Provide a sensitive Map of secrets to be used in Cloudflare"
   type = object({
     tunnel_secrets = optional(map(object({
-      secret      = string
+      secret = string
     })), {})
   })
-  default   = {
+  default = {
     tunnel_secrets = {}
   }
   sensitive = true

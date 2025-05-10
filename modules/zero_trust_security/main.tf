@@ -180,3 +180,15 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_virtual_network" "this" {
   is_default_network = try(each.value.is_default_network, false)
   comment            = try(each.value.comment, null)
 }
+
+resource "cloudflare_zero_trust_tunnel_cloudflared_config" "this" {
+  for_each = {
+    for tunnel_key, tunnel in var.tunnels : tunnel_key => tunnel
+    if contains(keys(tunnel), "cloudflared_config")
+  }
+
+  account_id = var.account_id
+  tunnel_id  = cloudflare_zero_trust_tunnel_cloudflared.this[each.key].id
+  config     = each.value.cloudflared_config
+}
+
