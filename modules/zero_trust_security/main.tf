@@ -143,7 +143,7 @@ resource "cloudflare_zero_trust_tunnel_cloudflared" "this" {
   tunnel_secret  = try(var.cloudflare_secrets.tunnel_secrets[each.key].secret, null)
 }
 
-# # # Zero Trust Virtual Network
+# Zero Trust Virtual Network
 resource "cloudflare_zero_trust_tunnel_cloudflared_virtual_network" "this" {
   for_each = var.virtual_networks
 
