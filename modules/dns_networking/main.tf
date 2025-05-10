@@ -52,9 +52,6 @@ resource "cloudflare_dns_record" "this" {
   comment  = each.value.comment
   priority = each.value.type == "MX" ? each.value.priority : null
 
-  lifecycle {
-    create_before_destroy = true
-  }
 }
 
 
