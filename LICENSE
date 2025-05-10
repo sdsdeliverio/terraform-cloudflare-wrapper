@@ -1,10 +1,19 @@
 # GNU GENERAL PUBLIC LICENSE
 ### Version 3, 29 June 2007
 
-Copyright (C) 2025 **SDS Deliver IO Ltd**
-
-Everyone is permitted to copy and distribute verbatim copies of this license document, but changing it is not allowed.
-
+# This file is part of the Terraform Cloudflare Module by SDS Deliver IO Ltd.
+# Copyright (C) 2025 SDS Deliver IO Ltd.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, version 3.
+# 
+# Everyone is permitted to copy and distribute verbatim copies of this license document, but changing it is not allowed.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
 ---
 
 ## Preamble
@@ -43,26 +52,4 @@ The GNU GPL version 3 prohibits this practice for products where it is most unac
 The full legal text of the GNU GPL v3 is available at:  
 ➡️ https://www.gnu.org/licenses/gpl-3.0.txt
 
-You may copy and paste the full license content from the link above if needed in plaintext.
-
 ---
-
-## How to Apply This License
-
-Include the following header in each source file:
-
-```hcl
-# This file is part of the Terraform Cloudflare Module by SDS Deliver IO Ltd.
-# Copyright (C) 2025 SDS Deliver IO Ltd.
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, version 3.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program. If not, see <https://www.gnu.org/licenses/>.
