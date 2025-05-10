@@ -7,16 +7,16 @@
 #   }}
 # }
 
-# output "dns_records" {
-#   description = "Map of created DNS records"
-#   value       = { for k, v in cloudflare_dns_record.this : k => {
-#     id      = v.id
-#     name    = v.name
-#     type    = v.type
-#     content = v.content
-#     proxied = v.proxied
-#   }}
-# }
+output "dns_records" {
+  description = "Map of created DNS records"
+  value       = { for k, v in cloudflare_dns_record.this : k => {
+    id      = v.id
+    name    = v.name
+    type    = v.type
+    content = v.content
+    proxied = v.proxied
+  }}
+}
 
 # output "dns_settings" {
 #   description = "Map of zone DNS settings"
