@@ -21,9 +21,9 @@ resource "cloudflare_bot_management" "this" {
   crawler_protection = var.cloudflare_bot_management.crawler_protection
   lifecycle {
     prevent_destroy = true
-    ignore_changes = [ 
-      "using_latest_model"
-     ]
+    # ignore_changes = [ 
+    #   "using_latest_model"
+    #  ]
   }
 }
 
