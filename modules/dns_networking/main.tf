@@ -24,7 +24,7 @@ resource "cloudflare_dns_record" "this" {
   for_each = { for record in flatten([
     for config in var.records : [
       for idx, record in config.records : {
-        key       = "${config.zone_key}-${record.name}-${record.type}-${idx}"
+        key       = "${var.environment}-${record.name}.${config.zone_key}_${record.type}-${idx}"
         zone_id   = local.zones_map[config.zone_key].id
         name      = record.name
         type      = record.type

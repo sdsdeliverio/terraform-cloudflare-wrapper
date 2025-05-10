@@ -1,5 +1,11 @@
 # Variables for dns_networking
 
+variable "environment" {
+  description = "Environment name for resource tagging"
+  type        = string
+  default     = "production"
+}
+
 variable "account_id" {
   description = "The account ID to manage resources for"
   type        = string

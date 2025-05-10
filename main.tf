@@ -21,12 +21,16 @@ locals {
 
 # DNS Networking Module
 module "dns_networking" {
-  count  = var.enabled_modules["dns_networking"] ? 1 : 0
-  source = "./modules/dns_networking"
+  count       = var.enabled_modules["dns_networking"] ? 1 : 0
+  source      = "./modules/dns_networking"
+  
+  environment = var.environment
 
-  account_id = var.account_id
-  zones      = var.dns_networking_config.zones
-  records    = var.dns_networking_config.records
+  account_id  = var.account_id
+  zones       = var.dns_networking_config.zones
+  records     = var.dns_networking_config.records
+
+  dns_firewall_rules = try(var.dns_networking_config.firewall_rules, [])
 }
 
 # # Security Bot Management Module
