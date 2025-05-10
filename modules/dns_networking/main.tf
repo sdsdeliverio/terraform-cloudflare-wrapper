@@ -18,9 +18,12 @@ resource "cloudflare_bot_management" "this" {
   ai_bots_protection = var.cloudflare_bot_management.ai_bots_protection
   fight_mode         = var.cloudflare_bot_management.fight_mode
   enable_js          = var.cloudflare_bot_management.enable_js
-
+  crawler_protection = var.cloudflare_bot_management.crawler_protection
   lifecycle {
     prevent_destroy = true
+    ignore_changes = [ 
+      "using_latest_model"
+     ]
   }
 }
 

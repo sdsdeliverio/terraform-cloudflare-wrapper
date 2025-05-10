@@ -46,6 +46,7 @@ variable "cloudflare_bot_management" {
     ai_bots_protection = optional(string, "block")
     fight_mode         = optional(bool, true)
     enable_js          = optional(bool, true)
+    crawler_protection = optional(string, "enabled")
   })
   description = "CF Bot Management Configs"
   default = {
