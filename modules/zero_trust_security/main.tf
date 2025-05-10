@@ -7,6 +7,34 @@ terraform {
   }
 }
 
+
+# Access Policy
+resource "cloudflare_zero_trust_access_policy" "this" {
+  for_each = var.access_policies
+
+  name       = each.value.name
+  account_id = var.account_id
+  decision   = each.value.decision
+  include    = each.value.include
+
+  exclude                        = each.value.exclude
+  require                        = each.value.require
+  session_duration               = each.value.session_duration
+  approval_required              = each.value.approval_required
+  approval_groups                = each.value.approval_groups
+  purpose_justification_prompt   = each.value.purpose_justification_prompt
+  purpose_justification_required = each.value.purpose_justification_required
+  isolation_required             = each.value.isolation_required
+
+  lifecycle {
+    create_before_destroy = true
+    # prevent_destroy       = false
+    # ignore_changes = [
+    #   reusable
+    # ]
+  }
+}
+
 # Access Application
 resource "cloudflare_zero_trust_access_application" "this" {
   for_each = { for idx, app in var.access_applications : idx => app }
@@ -31,10 +59,10 @@ resource "cloudflare_zero_trust_access_application" "this" {
   options_preflight_bypass     = each.value.options_preflight_bypass
   path_cookie_attribute        = each.value.path_cookie_attribute
   policies = [
-    # for policy_key in each.value.policies : {
-    #   id         = cloudflare_zero_trust_access_policy.this[policy_key].id
-    #   precedence = index(each.value.policies, policy_key)
-    # }
+    for policy_key in each.value.policies : {
+      id         = cloudflare_zero_trust_access_policy.this[policy_key].id
+      precedence = index(each.value.policies, policy_key)
+    }
   ]
   read_service_tokens_from_header = each.value.read_service_tokens_from_header
   same_site_cookie_attribute      = each.value.same_site_cookie_attribute
@@ -48,33 +76,6 @@ resource "cloudflare_zero_trust_access_application" "this" {
     create_before_destroy = true
     prevent_destroy       = false
 
-  }
-}
-
-# Access Policy
-resource "cloudflare_zero_trust_access_policy" "this" {
-  for_each = { for policy in var.access_policies : "${policy.name}" => policy }
-
-  name       = each.value.name
-  account_id = var.account_id
-  decision   = each.value.decision
-  include    = each.value.include
-
-  exclude                        = each.value.exclude
-  require                        = each.value.require
-  session_duration               = each.value.session_duration
-  approval_required              = each.value.approval_required
-  approval_groups                = each.value.approval_groups
-  purpose_justification_prompt   = each.value.purpose_justification_prompt
-  purpose_justification_required = each.value.purpose_justification_required
-  isolation_required             = each.value.isolation_required
-
-  lifecycle {
-    create_before_destroy = true
-    # prevent_destroy       = false
-    # ignore_changes = [
-    #   reusable
-    # ]
   }
 }
 
