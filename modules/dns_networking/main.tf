@@ -12,6 +12,14 @@ locals {
   zones_map = { for zone in var.zones : zone.name => zone }
 }
 
+resource "cloudflare_bot_management" "this" {
+  for_each           = { for zone in var.zones : zone.name => zone }
+  zone_id            = each.value.id
+  ai_bots_protection = var.cloudflare_bot_management.ai_bots_protection
+  fight_mode         = var.cloudflare_bot_management.fight_mode
+  enable_js          = var.cloudflare_bot_management.enable_js
+}
+
 resource "cloudflare_dns_record" "this" {
   for_each = { for record in flatten([
     for config in var.records : [
@@ -31,11 +39,11 @@ resource "cloudflare_dns_record" "this" {
   ]) : record.key => record }
 
   name = (
-    each.value.name == "" || each.value.name == "@" 
-    ? each.value.zone_name 
+    each.value.name == "" || each.value.name == "@"
+    ? each.value.zone_name
     : "${each.value.name}.${each.value.zone_name}"
   )
-    
+
   zone_id  = each.value.zone_id
   type     = each.value.type
   content  = each.value.content
@@ -48,3 +56,5 @@ resource "cloudflare_dns_record" "this" {
     create_before_destroy = true
   }
 }
+
+
