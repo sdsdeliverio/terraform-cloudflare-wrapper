@@ -190,5 +190,10 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "this" {
   account_id = var.account_id
   tunnel_id  = cloudflare_zero_trust_tunnel_cloudflared.this[each.key].id
   config     = each.value.cloudflared_config
+
+
+  depends_on = [
+    cloudflare_zero_trust_tunnel_cloudflared.this,
+  ]
 }
 
