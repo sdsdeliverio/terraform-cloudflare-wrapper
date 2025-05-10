@@ -39,7 +39,7 @@ variable "enabled_modules" {
 
 variable "dns_networking_config" {
   description = "List of zones and their DNS records configurations"
-  type = {
+  type = object({
     zones = list(object({
       name                 = string
       id                   = string
@@ -61,8 +61,11 @@ variable "dns_networking_config" {
         comment  = optional(string, "Managed by Terraform")
       }))
     })), [])
+  })
+  default = {
+    zones = [],
+    records = []
   }
-  default = []
 }
 
 variable "cloudflare_bot_management" {

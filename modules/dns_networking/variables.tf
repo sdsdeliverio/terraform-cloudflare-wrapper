@@ -22,13 +22,15 @@ variable "records" {
   description = "List of zones and their DNS records configurations"
   type = list(object({
     zone_key = string
-    name     = string
-    type     = string
-    content  = string
-    ttl      = number
-    proxied  = optional(bool, false)
-    priority = optional(number)
-    comment  = optional(string, "Managed by Terraform")
+    records = list(object({
+      name     = string
+      type     = string
+      content  = string
+      ttl      = optional(number, 1)
+      proxied  = optional(bool, true)
+      priority = optional(number)
+      comment  = optional(string, "Managed by Terraform")
+    }))
   }))
   default = []
 }
