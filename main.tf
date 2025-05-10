@@ -63,15 +63,17 @@ module "dns_networking" {
 # }
 
 # # Zero Trust Security Module
-# module "zero_trust_security" {
-#   count  = var.enabled_modules["zero_trust_security"] ? 1 : 0
-#   source = "./modules/zero_trust_security"
+module "zero_trust_security" {
+  count  = var.enabled_modules["zero_trust_security"] ? 1 : 0
+  source = "./modules/zero_trust_security"
 
-#   account_id = var.account_id
-#   access_applications = try(var.zero_trust_config.applications, [])
-#   access_policies = try(var.zero_trust_config.policies, [])
-#   tunnels = try(var.zero_trust_config.tunnels, [])
-# }
+  account_id = var.account_id
+  access_applications = try(var.zero_trust_config.access_applications, [])
+  access_policies = try(var.zero_trust_config.access_policies, [])
+  tunnels = try(var.zero_trust_config.tunnels, [])
+  virtual_networks = try(var.zero_trust_config.virtual_networks, [])
+  gateway_policies = try(var.zero_trust_config.gateway_policies, [])
+}
 
 # # Pages Delivery Module
 # module "pages_delivery" {

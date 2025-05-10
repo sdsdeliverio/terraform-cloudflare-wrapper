@@ -10,11 +10,11 @@ variable "pages_projects" {
   type = list(object({
     name              = string
     production_branch = optional(string, "main")
-    build_config     = optional(object({
+    build_config = optional(object({
       build_command       = string
       destination_dir     = optional(string, "public")
-      root_dir           = optional(string, "")
-      web_analytics_tag  = optional(string, "")
+      root_dir            = optional(string, "")
+      web_analytics_tag   = optional(string, "")
       web_analytics_token = optional(string, "")
     }))
   }))
@@ -25,7 +25,7 @@ variable "pages_domains" {
   description = "List of Pages domains to manage"
   type = list(object({
     project_name = string
-    domain      = string
+    domain       = string
   }))
   default = []
 }
@@ -72,12 +72,12 @@ variable "streams" {
   description = "List of streams to manage"
   type = list(object({
     account_id         = string
-    name              = string
-    input_url         = string
-    watermark_uid     = optional(string)
-    watermark_size    = optional(number, 0.1)
+    name               = string
+    input_url          = string
+    watermark_uid      = optional(string)
+    watermark_size     = optional(number, 0.1)
     watermark_position = optional(string, "center")
-    watermark_scale   = optional(bool, true)
+    watermark_scale    = optional(bool, true)
   }))
   default = []
 }
