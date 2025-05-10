@@ -17,7 +17,8 @@ This Terraform module provides a comprehensive solution for managing Cloudflare 
 
 ```hcl
 module "cloudflare" {
-  source = "git::https://github.com/username/terraform-cloudflare.git?ref=v1.0.0"
+  source  = "sdsdeliverio/wrapper/cloudflare"
+  version = "1.0.0"
 
   cloudflare_api_token = var.cloudflare_api_token
   account_id          = var.account_id
@@ -126,7 +127,8 @@ Handles R2 bucket creation and configuration.
 ### Basic DNS Management
 ```hcl
 module "cloudflare" {
-  source = "git::https://github.com/username/terraform-cloudflare.git?ref=v1.0.0"
+  source  = "sdsdeliverio/wrapper/cloudflare"
+  version = "1.0.0"
 
   cloudflare_api_token = var.cloudflare_api_token
   account_id          = var.account_id
@@ -154,7 +156,8 @@ module "cloudflare" {
 ### Zero Trust Security Setup
 ```hcl
 module "cloudflare" {
-  source = "git::https://github.com/username/terraform-cloudflare.git?ref=v1.0.0"
+  source  = "sdsdeliverio/wrapper/cloudflare"
+  version = "1.0.0"
 
   cloudflare_api_token = var.cloudflare_api_token
   account_id          = var.account_id
