@@ -107,19 +107,13 @@ variable "cloudflare_secrets" {
   description = "Provide a sensitive Map of secrets to be used in Cloudflare"
   type = object({
     tunnel_secrets = optional(map(object({
-      name        = string
       secret      = string
-      description = optional(string, "")
     })), {})
     api_keys = optional(map(object({
-      name        = string
       secret      = string
-      description = optional(string, "")
     })), {})
     service_tokens = optional(map(object({
-      name        = string
       secret      = string
-      description = optional(string, "")
     })), {})
   })
   default   = {}
