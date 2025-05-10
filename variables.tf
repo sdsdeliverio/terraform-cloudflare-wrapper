@@ -26,14 +26,14 @@ variable "enabled_modules" {
   description = "Map of modules to enable/disable"
   type        = map(bool)
   default = {
-    account_authentication  = false
-    dns_networking          = false
-    security_bot_management = false
-    ssl_tls_certificates    = false
-    workers                 = false
-    zero_trust_security     = false
-    pages_delivery          = false
-    r2_storage              = false
+    account_authentication  = true
+    dns_networking          = true
+    security_bot_management = true
+    ssl_tls_certificates    = true
+    workers                 = true
+    zero_trust_security     = true
+    pages_delivery          = true
+    r2_storage              = true
   }
 }
 
