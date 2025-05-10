@@ -1,7 +1,12 @@
 # Variables for zero_trust_security
 
 variable "account_id" {
-  description = "The account ID to manage resources for"
+  description = "The Account ID to manage resources"
+  type        = string
+}
+
+variable "default_zone_id" {
+  description = "Default Zone ID to manage resources"
   type        = string
 }
 
@@ -10,6 +15,7 @@ variable "access_applications" {
   type = map(object({
     name                        = string
     domain                      = string
+    zone_id                     = optional(string, null)
     type                        = string
     allowed_idps                = optional(list(string), null)
     app_launcher_visible        = optional(bool, null)

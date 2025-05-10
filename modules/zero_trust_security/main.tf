@@ -8,26 +8,55 @@ terraform {
 }
 
 # Access Application
-resource "cloudflare_access_application" "app" {
-  for_each = { for app in var.access_applications : app.name => app }
+resource "cloudflare_zero_trust_access_application" "this" {
+  for_each = { for idx, app in var.access_applications : idx => app }
 
-  zone_id          = try(each.value.zone_id, null)
-  account_id       = var.account_id
-  name             = each.key
-  domain           = each.value.domain
-  type             = try(each.value.type, "self_hosted")
-  session_duration = try(each.value.session_duration, "24h")
+  name                         = each.value.name
+  domain                       = each.value.domain
+  type                         = each.value.type
+  zone_id                      = try(each.value.zone_id, var.default_zone_id)
+  allow_authenticate_via_warp  = each.value.allow_authenticate_via_warp
+  allowed_idps                 = each.value.allowed_idps
+  app_launcher_visible         = each.value.app_launcher_visible
+  auto_redirect_to_identity    = each.value.auto_redirect_to_identity
+  cors_headers                 = each.value.cors_headers
+  custom_deny_message          = each.value.custom_deny_message
+  custom_deny_url              = each.value.custom_deny_url
+  custom_non_identity_deny_url = each.value.custom_non_identity_deny_url
+  custom_pages                 = each.value.custom_pages
+  destinations                 = each.value.destinations
+  enable_binding_cookie        = each.value.enable_binding_cookie
+  http_only_cookie_attribute   = each.value.http_only_cookie_attribute
+  logo_url                     = each.value.logo_url
+  options_preflight_bypass     = each.value.options_preflight_bypass
+  path_cookie_attribute        = each.value.path_cookie_attribute
+  policies = [
+    # for policy_key in each.value.policies : {
+    #   id         = cloudflare_zero_trust_access_policy.this[policy_key].id
+    #   precedence = index(each.value.policies, policy_key)
+    # }
+  ]
+  read_service_tokens_from_header = each.value.read_service_tokens_from_header
+  same_site_cookie_attribute      = each.value.same_site_cookie_attribute
+  service_auth_401_redirect       = each.value.service_auth_401_redirect
+  session_duration                = each.value.session_duration
+  skip_interstitial               = each.value.skip_interstitial
+  tags                            = each.value.tags
+  skip_app_launcher_login_page    = true
+
+  lifecycle {
+    create_before_destroy = true
+    prevent_destroy       = false
+
+  }
 }
 
 # Access Policy
-resource "cloudflare_access_policy" "policy" {
-  for_each = { for policy in var.access_policies : "${policy.application_id}-${policy.name}" => policy }
+resource "cloudflare_zero_trust_access_policy" "this" {
+  for_each = { for policy in var.access_policies : "${policy.name}" => policy }
 
-  # application_id = each.value.application_id
-  zone_id    = try(each.value.zone_id, null)
-  account_id = var.account_id
   name       = each.value.name
-  precedence = each.value.precedence
+  account_id = var.account_id
   decision   = each.value.decision
   include    = each.value.include
 
@@ -42,17 +71,10 @@ resource "cloudflare_access_policy" "policy" {
 
   lifecycle {
     create_before_destroy = true
-    prevent_destroy       = false
-    ignore_changes = [
-      reusable
-    ]
-  }
-  dynamic "include" {
-    for_each = [each.value.include]
-    content {
-      email = try(include.value.email, null)
-      group = try(include.value.group, null)
-    }
+    # prevent_destroy       = false
+    # ignore_changes = [
+    #   reusable
+    # ]
   }
 }
 
@@ -74,26 +96,26 @@ resource "cloudflare_access_policy" "policy" {
 # }
 
 # Zero Trust Gateway Policy
-resource "cloudflare_zero_trust_gateway_policy" "policy" {
-  for_each = { for policy in var.gateway_policies : policy.name => policy }
+# resource "cloudflare_zero_trust_gateway_policy" "policy" {
+#   for_each = { for policy in var.gateway_policies : policy.name => policy }
 
-  account_id = var.account_id
-  name       = each.key
-  enabled    = try(each.value.enabled, true)
+#   account_id = var.account_id
+#   name       = each.key
+#   enabled    = try(each.value.enabled, true)
 
-  dynamic "rule" {
-    for_each = each.value.rules
-    content {
-      name           = rule.value.name
-      action         = rule.value.action
-      enabled        = try(rule.value.enabled, true)
-      filters        = rule.value.filters
-      traffic        = rule.value.traffic
-      identity       = try(rule.value.identity, [])
-      device_posture = try(rule.value.device_posture, [])
-    }
-  }
-}
+#   dynamic "rule" {
+#     for_each = each.value.rules
+#     content {
+#       name           = rule.value.name
+#       action         = rule.value.action
+#       enabled        = try(rule.value.enabled, true)
+#       filters        = rule.value.filters
+#       traffic        = rule.value.traffic
+#       identity       = try(rule.value.identity, [])
+#       device_posture = try(rule.value.device_posture, [])
+#     }
+#   }
+# }
 
 # # Zero Trust Gateway Settings
 # resource "cloudflare_zero_trust_gateway_settings" "settings" {
@@ -111,21 +133,21 @@ resource "cloudflare_zero_trust_gateway_policy" "policy" {
 # }
 
 # Zero Trust Tunnel
-resource "cloudflare_zero_trust_tunnel_cloudflared" "tunnel" {
-  for_each = { for tunnel in var.tunnels : tunnel.name => tunnel }
+# resource "cloudflare_zero_trust_tunnel_cloudflared" "tunnel" {
+#   for_each = { for tunnel in var.tunnels : tunnel.name => tunnel }
 
-  account_id = var.account_id
-  name       = each.key
-  secret     = each.value.secret
-}
+#   account_id = var.account_id
+#   name       = each.key
+#   secret     = each.value.secret
+# }
 
-# Zero Trust Virtual Network
-resource "cloudflare_zero_trust_tunnel_cloudflared_virtual_network" "vnet" {
-  for_each = { for vnet in var.virtual_networks : vnet.name => vnet }
+# # Zero Trust Virtual Network
+# resource "cloudflare_zero_trust_tunnel_cloudflared_virtual_network" "vnet" {
+#   for_each = { for vnet in var.virtual_networks : vnet.name => vnet }
 
-  account_id         = var.account_id
-  name               = each.key
-  is_default_network = try(each.value.is_default_network, false)
-  comment            = try(each.value.comment, null)
-}
+#   account_id         = var.account_id
+#   name               = each.key
+#   is_default_network = try(each.value.is_default_network, false)
+#   comment            = try(each.value.comment, null)
+# }
 

@@ -1,21 +1,18 @@
-# output "zones" {
-#   description = "Map of created DNS zones"
-#   value       = { for k, v in cloudflare_zone.zones : k => {
-#     id     = v.id
-#     status = v.status
-#     plan   = v.plan
-#   }}
-# }
+output "zones" {
+  description = "Map of created DNS zones"
+  value       = var.zones
+}
 
 output "dns_records" {
   description = "Map of created DNS records"
-  value       = { for k, v in cloudflare_dns_record.this : k => {
+  value = { for k, v in cloudflare_dns_record.this : k => {
     id      = v.id
     name    = v.name
     type    = v.type
     content = v.content
     proxied = v.proxied
-  }}
+    }
+  }
 }
 
 # output "dns_settings" {

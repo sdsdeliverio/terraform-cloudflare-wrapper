@@ -18,6 +18,10 @@ resource "cloudflare_bot_management" "this" {
   ai_bots_protection = var.cloudflare_bot_management.ai_bots_protection
   fight_mode         = var.cloudflare_bot_management.fight_mode
   enable_js          = var.cloudflare_bot_management.enable_js
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "cloudflare_dns_record" "this" {

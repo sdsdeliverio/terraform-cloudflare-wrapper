@@ -8,12 +8,12 @@
 #   sensitive = true
 # }
 
-# # DNS Networking outputs
+# DNS Networking outputs
 # output "dns_networking" {
 #   description = "DNS networking module outputs"
 #   value = var.enabled_modules["dns_networking"] ? {
-#     zones = module.dns_networking[0].zones
-#     records = module.dns_networking[0].dns_records
+#     zones       = module.dns_networking[0].zones
+#     records     = module.dns_networking[0].dns_records
 #   } : null
 # }
 

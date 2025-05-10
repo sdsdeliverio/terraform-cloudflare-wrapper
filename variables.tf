@@ -267,7 +267,7 @@ variable "zero_trust_config" {
 
       }))
       precedence = optional(number, 0)
-      exclude = list(object({
+      exclude = optional(list(object({
         any_valid_service_token = optional(object({
           auth_method = string
         }), null)
@@ -326,8 +326,8 @@ variable "zero_trust_config" {
           identity_provider_id = string
         }), null)
 
-      }))
-      require = list(object({
+      })), [])
+      require = optional(list(object({
         any_valid_service_token = optional(object({
           auth_method = string
         }))
@@ -385,7 +385,7 @@ variable "zero_trust_config" {
           name                 = string
           identity_provider_id = string
         }), null)
-      }))
+      })), [])
       session_duration  = optional(string, null)
       approval_required = optional(bool, false)
       approval_groups = optional(list(object({
@@ -398,6 +398,14 @@ variable "zero_trust_config" {
       isolation_required             = optional(bool, false)
     })))
   })
+  default = {
+    tunnels            = []
+    virtual_networks   = []
+    gateway_policies   = []
+    gateway_settings   = []
+    access_applications = {}
+    access_policies    = {}
+  }
 }
 
 # Pages Delivery Module Variables
