@@ -78,7 +78,7 @@ variable "access_applications" {
     service_auth_401_redirect = optional(bool, false)
     session_duration          = string
     skip_interstitial         = optional(bool, null)
-    tags                      = optional(list(string), null)
+    tags                      = optional(list(string), [])
   }))
   default = {}
 }
