@@ -103,20 +103,44 @@ variable "workers_config" {
   default     = {}
 }
 
+variable "cloudflare_secrets" {
+  description = "Provide a sensitive Map of secrets to be used in Cloudflare"
+  type = object({
+    tunnel_secrets = optional(map(object({
+      name        = string
+      secret      = string
+      description = optional(string, "")
+    })), {})
+    api_keys = optional(map(object({
+      name        = string
+      secret      = string
+      description = optional(string, "")
+    })), {})
+    service_tokens = optional(map(object({
+      name        = string
+      secret      = string
+      description = optional(string, "")
+    })), {})
+  })
+  default   = {}
+  sensitive = true
+}
+
 # Zero Trust Security Module Variables
 variable "zero_trust_config" {
   description = "Configuration for the Zero Trust security module"
   type = object({
-    tunnels = optional(list(object({
-      name   = string
-      secret = string
-    })))
-    virtual_networks = optional(list(object({
+    tunnels = optional(map(object({
+      name          = string
+      config_src    = optional(string, "cloudflare")
+      tunnel_secret = optional(string)
+    })), {})
+    virtual_networks = optional(map(object({
       name               = string
       is_default_network = optional(bool, false)
       comment            = optional(string)
-    })))
-    gateway_policies = optional(list(object({
+    })), {})
+    gateway_policies = optional(map(object({
       name    = string
       enabled = optional(bool, true)
       rules = list(object({
@@ -128,14 +152,14 @@ variable "zero_trust_config" {
         identity       = optional(list(string), [])
         device_posture = optional(list(string), [])
       }))
-    })))
-    gateway_settings = optional(list(object({
+    })), {})
+    gateway_settings = optional(map(object({
       account_id                 = string
       antivirus_enabled_download = optional(bool, true)
       antivirus_enabled_upload   = optional(bool, true)
       antivirus_fail_closed      = optional(bool, true)
       tls_decrypt_enabled        = optional(bool, true)
-    })))
+    })), {})
     access_applications = optional(map(object({
       name                        = string
       domain                      = string
@@ -202,7 +226,7 @@ variable "zero_trust_config" {
       session_duration          = string
       skip_interstitial         = optional(bool, null)
       tags                      = optional(list(string), null)
-    })))
+    })), {})
     access_policies = optional(map(object({
       name     = string
       decision = string
@@ -264,7 +288,6 @@ variable "zero_trust_config" {
           name                 = string
           identity_provider_id = string
         }), null)
-
       }))
       precedence = optional(number, 0)
       exclude = optional(list(object({
@@ -399,12 +422,12 @@ variable "zero_trust_config" {
     })))
   })
   default = {
-    tunnels            = []
-    virtual_networks   = []
-    gateway_policies   = []
-    gateway_settings   = []
+    tunnels             = {}
+    virtual_networks    = {}
+    gateway_policies    = {}
+    gateway_settings    = {}
     access_applications = {}
-    access_policies    = {}
+    access_policies     = {}
   }
 }
 

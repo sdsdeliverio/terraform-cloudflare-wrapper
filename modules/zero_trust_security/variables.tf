@@ -284,7 +284,7 @@ variable "access_policies" {
 
 variable "access_groups" {
   description = "List of Access groups to manage"
-  type = list(object({
+  type = map(object({
     name = string
     include = object({
       email  = optional(list(string))
@@ -292,12 +292,12 @@ variable "access_groups" {
       group  = optional(list(string))
     })
   }))
-  default = []
+  default = {}
 }
 
 variable "gateway_policies" {
   description = "List of Zero Trust Gateway policies"
-  type = list(object({
+  type = map(object({
     name    = string
     enabled = optional(bool, true)
     rules = list(object({
@@ -310,37 +310,37 @@ variable "gateway_policies" {
       device_posture = optional(list(string), [])
     }))
   }))
-  default = []
+  default = {}
 }
 
 variable "gateway_settings" {
   description = "List of Zero Trust Gateway settings"
-  type = list(object({
+  type = map(object({
     account_id                 = string
     antivirus_enabled_download = optional(bool, true)
     antivirus_enabled_upload   = optional(bool, true)
     antivirus_fail_closed      = optional(bool, true)
     tls_decrypt_enabled        = optional(bool, true)
   }))
-  default = []
+  default = {}
 }
 
 variable "tunnels" {
   description = "List of Zero Trust tunnels"
-  type = list(object({
-    name   = string
-    secret = string
+  type = map(object({
+    name = string
+    config_src = optional(string, "cloudflare")
+    # tunnel_secret = sensitive(string)
   }))
-  default   = []
-  sensitive = true
+  default   = {}
 }
 
 variable "virtual_networks" {
   description = "List of Zero Trust virtual networks"
-  type = list(object({
+  type = map(object({
     name               = string
     is_default_network = optional(bool, false)
     comment            = optional(string)
   }))
-  default = []
+  default = {}
 }

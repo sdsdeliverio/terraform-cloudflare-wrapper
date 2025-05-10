@@ -42,7 +42,7 @@ resource "cloudflare_zero_trust_access_application" "this" {
   name                         = each.value.name
   domain                       = each.value.domain
   type                         = each.value.type
-  account_id = var.account_id
+  account_id                   = var.account_id
   allow_authenticate_via_warp  = each.value.allow_authenticate_via_warp
   allowed_idps                 = each.value.allowed_idps
   app_launcher_visible         = each.value.app_launcher_visible
@@ -134,21 +134,22 @@ resource "cloudflare_zero_trust_access_application" "this" {
 # }
 
 # Zero Trust Tunnel
-# resource "cloudflare_zero_trust_tunnel_cloudflared" "tunnel" {
-#   for_each = { for tunnel in var.tunnels : tunnel.name => tunnel }
+resource "cloudflare_zero_trust_tunnel_cloudflared" "this" {
+  for_each = var.tunnels
 
-#   account_id = var.account_id
-#   name       = each.key
-#   secret     = each.value.secret
-# }
+  account_id = var.account_id
+  name       = each.value.name
+  config_src = each.value.config_src
+  # tunnel_secret  = each.value.tunnel_secret
+}
 
-# # Zero Trust Virtual Network
-# resource "cloudflare_zero_trust_tunnel_cloudflared_virtual_network" "vnet" {
-#   for_each = { for vnet in var.virtual_networks : vnet.name => vnet }
+# # # Zero Trust Virtual Network
+resource "cloudflare_zero_trust_tunnel_cloudflared_virtual_network" "this" {
+  for_each = var.virtual_networks
 
-#   account_id         = var.account_id
-#   name               = each.key
-#   is_default_network = try(each.value.is_default_network, false)
-#   comment            = try(each.value.comment, null)
-# }
+  account_id         = var.account_id
+  name               = each.value.name
+  is_default_network = try(each.value.is_default_network, false)
+  comment            = try(each.value.comment, null)
+}
 
