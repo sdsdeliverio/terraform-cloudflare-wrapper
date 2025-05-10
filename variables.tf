@@ -127,7 +127,6 @@ variable "zero_trust_config" {
     tunnels = optional(map(object({
       name          = string
       config_src    = optional(string, "cloudflare")
-      tunnel_secret = optional(string)
     })), {})
     virtual_networks = optional(map(object({
       name               = string
