@@ -42,7 +42,7 @@ resource "cloudflare_zero_trust_access_application" "this" {
   name                         = each.value.name
   domain                       = each.value.domain
   type                         = each.value.type
-  zone_id                      = try(each.value.zone_id, var.default_zone_id)
+  account_id = var.account_id
   allow_authenticate_via_warp  = each.value.allow_authenticate_via_warp
   allowed_idps                 = each.value.allowed_idps
   app_launcher_visible         = each.value.app_launcher_visible
