@@ -143,6 +143,34 @@ resource "cloudflare_zero_trust_tunnel_cloudflared" "this" {
   tunnel_secret  = try(var.cloudflare_secrets.tunnel_secrets[each.key].secret, null)
 }
 
+resource "cloudflare_zero_trust_tunnel_cloudflared_route" "this" {
+  for_each = {
+    for route in flatten([
+      for tunnel_key, tunnel in var.tunnels : [
+        for route_idx, route in tunnel.routes : {
+          key        = "${tunnel_key}-${route_idx}"
+          tunnel_key = tunnel_key
+          route      = route
+        }
+      ]
+    ]) : route.key => {
+      tunnel_key = route.tunnel_key
+      route      = route.route
+    }
+  }
+
+  tunnel_id          = cloudflare_zero_trust_tunnel_cloudflared.this[each.value.tunnel_key].id
+  account_id         = var.account_id
+  network            = each.value.route.network
+  comment            = each.value.route.comment
+  virtual_network_id = each.value.route.virtual_network_id
+
+  depends_on = [
+    cloudflare_zero_trust_tunnel_cloudflared.this,
+    cloudflare_zero_trust_tunnel_cloudflared_virtual_network.this
+  ]
+}
+
 # Zero Trust Virtual Network
 resource "cloudflare_zero_trust_tunnel_cloudflared_virtual_network" "this" {
   for_each = var.virtual_networks

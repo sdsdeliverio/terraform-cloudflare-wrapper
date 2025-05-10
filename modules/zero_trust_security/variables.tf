@@ -330,6 +330,12 @@ variable "tunnels" {
   type = map(object({
     name = string
     config_src = optional(string, "cloudflare")
+   
+    routes = optional(list(object({
+      virtual_network = string
+      network = string
+      comment  = string
+    })), [])
   }))
   default   = {}
 }
