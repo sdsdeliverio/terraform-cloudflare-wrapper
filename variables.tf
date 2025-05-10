@@ -107,13 +107,13 @@ variable "cloudflare_secrets" {
   description = "Provide a sensitive Map of secrets to be used in Cloudflare"
   type = object({
     tunnel_secrets = optional(map(object({
-      secret      = string
+      secret = string
     })), {})
     api_keys = optional(map(object({
-      secret      = string
+      secret = string
     })), {})
     service_tokens = optional(map(object({
-      secret      = string
+      secret = string
     })), {})
   })
   default   = {}
@@ -125,8 +125,13 @@ variable "zero_trust_config" {
   description = "Configuration for the Zero Trust security module"
   type = object({
     tunnels = optional(map(object({
-      name          = string
-      config_src    = optional(string, "cloudflare")
+      name       = string
+      config_src = optional(string, "cloudflare")
+      routes = optional(list(object({
+        virtual_network = string
+        network         = string
+        comment         = string
+      })), [])
     })), {})
     virtual_networks = optional(map(object({
       name               = string
