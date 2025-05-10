@@ -140,7 +140,7 @@ resource "cloudflare_zero_trust_tunnel_cloudflared" "this" {
   account_id = var.account_id
   name       = each.value.name
   config_src = each.value.config_src
-  # tunnel_secret  = each.value.tunnel_secret
+  tunnel_secret  = try(var.cloudflare_secrets.tunnel_secrets[each.key].secret, null)
 }
 
 # # # Zero Trust Virtual Network

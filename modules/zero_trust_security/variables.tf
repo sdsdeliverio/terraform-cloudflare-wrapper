@@ -330,7 +330,6 @@ variable "tunnels" {
   type = map(object({
     name = string
     config_src = optional(string, "cloudflare")
-    # tunnel_secret = sensitive(string)
   }))
   default   = {}
 }
@@ -343,4 +342,17 @@ variable "virtual_networks" {
     comment            = optional(string)
   }))
   default = {}
+}
+
+variable "cloudflare_secrets" {
+  description = "Provide a sensitive Map of secrets to be used in Cloudflare"
+  type = object({
+    tunnel_secrets = optional(map(object({
+      secret      = string
+    })), {})
+  })
+  default   = {
+    tunnel_secrets = {}
+  }
+  sensitive = true
 }

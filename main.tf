@@ -69,6 +69,8 @@ module "zero_trust_security" {
 
   default_zone_id = var.dns_networking_config.zones[0].id
 
+  cloudflare_secrets = var.cloudflare_secrets
+
   account_id          = var.account_id
   access_applications = try(var.zero_trust_config.access_applications, {})
   access_policies     = try(var.zero_trust_config.access_policies, {})
