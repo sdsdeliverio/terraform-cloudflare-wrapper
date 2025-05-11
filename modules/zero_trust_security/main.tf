@@ -163,7 +163,7 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_route" "this" {
   account_id         = var.account_id
   network            = each.value.route.network
   comment            = each.value.route.comment
-  virtual_network_id = each.value.route.virtual_network_id
+  virtual_network_id = each.value.route.virtual_network //TODO: grab .id from the virtual network resource
 
   depends_on = [
     cloudflare_zero_trust_tunnel_cloudflared.this,
@@ -195,5 +195,9 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "this" {
   depends_on = [
     cloudflare_zero_trust_tunnel_cloudflared.this,
   ]
+
+  lifecycle {
+    prevent_destroy       = true
+  }
 }
 
