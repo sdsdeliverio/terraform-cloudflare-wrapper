@@ -189,8 +189,8 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "this" {
 
   account_id = var.account_id
   tunnel_id  = cloudflare_zero_trust_tunnel_cloudflared.this[each.key].id
-  config     = each.value.cloudflared_config
 
+  config     =  each.value.cloudflared_config != null ? jsonencode(each.value.cloudflared_config) : jsonencode({})
 
   depends_on = [
     cloudflare_zero_trust_tunnel_cloudflared.this,
