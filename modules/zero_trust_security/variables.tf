@@ -382,7 +382,7 @@ variable "tunnels" {
         tcp_keep_alive           = optional(number)
         tls_timeout              = optional(number)
       }))
-    }))
+    }),null)
   }))
   default = {}
 }
