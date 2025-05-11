@@ -343,7 +343,7 @@ variable "tunnels" {
           access = optional(object({
             aud_tag   = optional(list(string))
             team_name = optional(string)
-            required  = optional(bool)
+            required  = optional(bool, true)
           }))
           ca_pool                  = optional(string)
           connect_timeout          = optional(number)

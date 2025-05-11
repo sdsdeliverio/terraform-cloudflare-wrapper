@@ -4,8 +4,8 @@ variable "bot_management_zones" {
   description = "List of zones for bot management configuration"
   type = list(object({
     zone_id           = string
-    enable_js        = optional(bool, true)
-    fight_mode       = optional(bool, false)
+    enable_js         = optional(bool, true)
+    fight_mode        = optional(bool, false)
     optimization_type = optional(string, "balanced")
   }))
   default = []
@@ -60,11 +60,11 @@ variable "authenticated_origin_pulls" {
 variable "origin_pull_certificates" {
   description = "List of authenticated origin pull certificates"
   type = list(object({
-    zone_id      = string
-    certificate  = string
+    zone_id     = string
+    certificate = string
     private_key = string
     type        = optional(string, "per-zone")
   }))
-  default = []
+  default   = []
   sensitive = true
 }

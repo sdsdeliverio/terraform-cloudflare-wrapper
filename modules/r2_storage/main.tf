@@ -25,11 +25,11 @@ resource "cloudflare_r2_bucket_cors" "cors" {
   dynamic "cors_rule" {
     for_each = each.value.cors_rules
     content {
-      allowed_origins    = cors_rule.value.allowed_origins
-      allowed_methods    = cors_rule.value.allowed_methods
-      allowed_headers    = try(cors_rule.value.allowed_headers, [])
-      exposed_headers    = try(cors_rule.value.exposed_headers, [])
-      max_age_seconds   = try(cors_rule.value.max_age_seconds, 600)
+      allowed_origins = cors_rule.value.allowed_origins
+      allowed_methods = cors_rule.value.allowed_methods
+      allowed_headers = try(cors_rule.value.allowed_headers, [])
+      exposed_headers = try(cors_rule.value.exposed_headers, [])
+      max_age_seconds = try(cors_rule.value.max_age_seconds, 600)
     }
   }
 }

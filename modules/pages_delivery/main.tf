@@ -20,8 +20,8 @@ resource "cloudflare_pages_project" "project" {
     content {
       build_command       = build_config.value.build_command
       destination_dir     = try(build_config.value.destination_dir, "public")
-      root_dir           = try(build_config.value.root_dir, "")
-      web_analytics_tag  = try(build_config.value.web_analytics_tag, "")
+      root_dir            = try(build_config.value.root_dir, "")
+      web_analytics_tag   = try(build_config.value.web_analytics_tag, "")
       web_analytics_token = try(build_config.value.web_analytics_token, "")
     }
   }
@@ -40,15 +40,15 @@ resource "cloudflare_pages_domain" "domain" {
 resource "cloudflare_custom_hostname" "hostname" {
   for_each = { for hostname in var.custom_hostnames : "${hostname.zone_id}-${hostname.hostname}" => hostname }
 
-  zone_id     = each.value.zone_id
-  hostname    = each.value.hostname
+  zone_id  = each.value.zone_id
+  hostname = each.value.hostname
   ssl {
-    method              = try(each.value.ssl_method, "http")
-    type               = try(each.value.ssl_type, "dv")
+    method = try(each.value.ssl_method, "http")
+    type   = try(each.value.ssl_type, "dv")
     settings {
-      http2            = try(each.value.enable_http2, true)
-      min_tls_version  = try(each.value.min_tls_version, "1.2")
-      tls13            = try(each.value.enable_tls13, true)
+      http2           = try(each.value.enable_http2, true)
+      min_tls_version = try(each.value.min_tls_version, "1.2")
+      tls13           = try(each.value.enable_tls13, true)
     }
   }
 }
@@ -87,10 +87,10 @@ resource "cloudflare_stream" "stream" {
     name = each.value.name
   }
   watermark {
-    uid        = try(each.value.watermark_uid, null)
-    size       = try(each.value.watermark_size, 0.1)
-    position   = try(each.value.watermark_position, "center")
-    scale      = try(each.value.watermark_scale, true)
+    uid      = try(each.value.watermark_uid, null)
+    size     = try(each.value.watermark_size, 0.1)
+    position = try(each.value.watermark_position, "center")
+    scale    = try(each.value.watermark_scale, true)
   }
 }
 

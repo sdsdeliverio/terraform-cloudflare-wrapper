@@ -10,7 +10,7 @@ terraform {
 # Account configuration
 resource "cloudflare_account" "account" {
   name              = var.account_name
-  type             = var.account_type
+  type              = var.account_type
   enforce_twofactor = var.enforce_twofactor
 }
 
@@ -30,15 +30,15 @@ resource "cloudflare_account_dns_settings_internal_view" "internal" {
 resource "cloudflare_account_member" "members" {
   for_each = { for member in var.account_members : member.email => member }
 
-  account_id  = cloudflare_account.account.id
-  email       = each.key
-  role_ids    = each.value.role_ids
-  status      = "pending"
+  account_id = cloudflare_account.account.id
+  email      = each.key
+  role_ids   = each.value.role_ids
+  status     = "pending"
 }
 
 # Account subscription
 resource "cloudflare_account_subscription" "subscription" {
-  account_id = cloudflare_account.account.id
+  account_id     = cloudflare_account.account.id
   zone_rate_plan = var.subscription_rate_plan
 }
 
@@ -50,7 +50,7 @@ resource "cloudflare_api_token" "token" {
 
   policy {
     permission_groups = each.value.permissions
-    resources        = each.value.resources
+    resources         = each.value.resources
   }
 }
 
@@ -66,10 +66,10 @@ resource "cloudflare_api_shield" "shield" {
 resource "cloudflare_api_shield_schema" "schemas" {
   for_each = { for schema in var.api_shield_schemas : schema.name => schema }
 
-  zone_id     = each.value.zone_id
-  name        = each.key
-  kind        = each.value.kind
-  validation  = each.value.validation
+  zone_id    = each.value.zone_id
+  name       = each.key
+  kind       = each.value.kind
+  validation = each.value.validation
 }
 
 # API Shield operation configuration

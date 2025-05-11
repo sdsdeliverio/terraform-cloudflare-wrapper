@@ -12,8 +12,8 @@ resource "cloudflare_bot_management" "bot" {
   for_each = { for zone in var.bot_management_zones : zone.zone_id => zone }
 
   zone_id           = each.key
-  enable_js        = try(each.value.enable_js, true)
-  fight_mode       = try(each.value.fight_mode, false)
+  enable_js         = try(each.value.enable_js, true)
+  fight_mode        = try(each.value.fight_mode, false)
   optimization_type = try(each.value.optimization_type, "balanced")
 }
 
@@ -65,8 +65,8 @@ resource "cloudflare_authenticated_origin_pulls" "aop" {
 resource "cloudflare_authenticated_origin_pulls_certificate" "cert" {
   for_each = { for cert in var.origin_pull_certificates : "${cert.zone_id}-${cert.certificate}" => cert }
 
-  zone_id      = each.value.zone_id
-  certificate  = each.value.certificate
+  zone_id     = each.value.zone_id
+  certificate = each.value.certificate
   private_key = each.value.private_key
   type        = try(each.value.type, "per-zone")
 }

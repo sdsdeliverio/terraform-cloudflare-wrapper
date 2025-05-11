@@ -14,7 +14,7 @@ resource "cloudflare_workers_script" "script" {
   account_id = var.account_id
   name       = each.key
   content    = each.value.content
-  
+
   dynamic "kv_namespace_binding" {
     for_each = try(each.value.kv_namespace_bindings, [])
     content {

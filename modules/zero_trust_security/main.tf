@@ -190,12 +190,72 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "with_cloudflared_con
   account_id = var.account_id
   tunnel_id  = cloudflare_zero_trust_tunnel_cloudflared.this[each.key].id
 
-  config = each.value.cloudflared_config
-
-  source = each.value.config_src
+  config = {
+    ingress = [
+      for ingress in each.value.cloudflared_config.ingress : {
+        hostname = ingress.hostname
+        service  = ingress.service
+        path     = ingress.path
+        origin_request = ingress.origin_request != null ? {
+          access = ingress.origin_request.access != null ? {
+            aud_tag = coalesce(
+              [
+                for app_key in ingress.origin_request.access.aud_tag :
+                cloudflare_zero_trust_access_application.this[app_key].aud
+              ],
+              null
+            )
+            team_name = ingress.origin_request.access.team_name
+            required  = ingress.origin_request.access.required
+          } : null
+          ca_pool                  = ingress.origin_request.ca_pool
+          connect_timeout          = ingress.origin_request.connect_timeout
+          disable_chunked_encoding = ingress.origin_request.disable_chunked_encoding
+          http2_origin             = ingress.origin_request.http2_origin
+          http_host_header         = ingress.origin_request.http_host_header
+          keep_alive_connections   = ingress.origin_request.keep_alive_connections
+          keep_alive_timeout       = ingress.origin_request.keep_alive_timeout
+          no_happy_eyeballs        = ingress.origin_request.no_happy_eyeballs
+          no_tls_verify            = ingress.origin_request.no_tls_verify
+          origin_server_name       = ingress.origin_request.origin_server_name
+          proxy_type               = ingress.origin_request.proxy_type
+          tcp_keep_alive           = ingress.origin_request.tcp_keep_alive
+          tls_timeout              = ingress.origin_request.tls_timeout
+        } : null
+      }
+    ]
+    origin_request = each.value.cloudflared_config.origin_request != null ? {
+      access = each.value.cloudflared_config.origin_request.access != null ? {
+        aud_tag = coalesce(
+          [
+            for app_key in try(each.value.each.value.cloudflared_config.origin_request.access.aud_tag, []) :
+            cloudflare_zero_trust_access_application.this[app_key].aud
+          ],
+          null
+        )
+        team_name = each.value.cloudflared_config.origin_request.access.team_name
+        required  = each.value.cloudflared_config.origin_request.access.required
+      } : null
+      ca_pool                  = each.value.cloudflared_config.origin_request.ca_pool
+      connect_timeout          = each.value.cloudflared_config.origin_request.connect_timeout
+      disable_chunked_encoding = each.value.cloudflared_config.disable_chunked_encoding
+      http2_origin             = each.value.cloudflared_config.http2_origin
+      http_host_header         = each.value.cloudflared_config.http_host_header
+      keep_alive_connections   = each.value.cloudflared_config.keep_alive_connections
+      keep_alive_timeout       = each.value.cloudflared_config.keep_alive_timeout
+      no_happy_eyeballs        = each.value.cloudflared_config.no_happy_eyeballs
+      no_tls_verify            = each.value.cloudflared_config.no_tls_verify
+      origin_server_name       = each.value.cloudflared_config.origin_server_name
+      proxy_type               = each.value.cloudflared_config.proxy_type
+      tcp_keep_alive           = each.value.cloudflared_config.tcp_keep_alive
+      tls_timeout              = each.value.cloudflared_config.tls_timeout
+    } : null
+    warp_routing = try(each.value.cloudflared_config.warp_routing, { enabled = true })
+  }
 
   depends_on = [
     cloudflare_zero_trust_tunnel_cloudflared.this,
+    cloudflare_zero_trust_access_application.this
   ]
 
   lifecycle {

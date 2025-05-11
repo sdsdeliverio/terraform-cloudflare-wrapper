@@ -31,8 +31,8 @@ variable "kv_pairs" {
   description = "List of KV pairs to manage"
   type = list(object({
     namespace_id = string
-    key         = string
-    value       = string
+    key          = string
+    value        = string
   }))
   default = []
 }

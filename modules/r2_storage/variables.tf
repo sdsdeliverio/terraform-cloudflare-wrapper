@@ -11,17 +11,17 @@ variable "r2_buckets" {
     name     = string
     location = optional(string, "WEUR")
     cors_rules = optional(list(object({
-      allowed_origins  = list(string)
-      allowed_methods  = list(string)
-      allowed_headers  = optional(list(string), [])
-      exposed_headers  = optional(list(string), [])
+      allowed_origins = list(string)
+      allowed_methods = list(string)
+      allowed_headers = optional(list(string), [])
+      exposed_headers = optional(list(string), [])
       max_age_seconds = optional(number, 600)
     })))
     lifecycle_rules = optional(list(object({
       enabled         = optional(bool, true)
       expiration_days = number
-      prefix         = optional(string, "")
-      tags           = optional(map(string), {})
+      prefix          = optional(string, "")
+      tags            = optional(map(string), {})
     })))
   }))
   default = []
@@ -31,7 +31,7 @@ variable "r2_custom_domains" {
   description = "List of R2 custom domains"
   type = list(object({
     custom_domain = string
-    bucket       = string
+    bucket        = string
   }))
   default = []
 }

@@ -74,3 +74,14 @@
 #     custom_domains = module.r2_storage[0].custom_domains
 #   } : null
 # }
+
+# output zerotrust security outputs in one map
+output "zero_trust_security" {
+  description = "Zero Trust security module outputs"
+  value = {
+    access_applications = {
+      aud_tags = module.zero_trust_security[*].access_applications_aud_tags
+    }
+  }
+  sensitive = false
+}
