@@ -314,7 +314,8 @@ resource "cloudflare_dns_record" "tunnel_dns_records" {
         }
         if ingress.auto_create_dns_zone_key != null && ingress.hostname != null
       ]
-      ]) : "${pair.tunnel_key}-${pair.hostname}" => {
+      ]) : "${var.environment}/${pair.hostname}_${pair.tunnel_key}-[${base64sha256(pair.hostname)}]" => {
+
       name = pair.hostname
       zone_id = [
         for zone in var.zones : zone.id
