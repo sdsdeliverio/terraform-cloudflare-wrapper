@@ -133,7 +133,7 @@ variable "zero_trust_config" {
         comment         = string
       })), [])
       cloudflared_config = optional(object({
-        ingress = optional(list(object({
+        ingress = list(object({
           hostname = optional(string)
           service  = string
           origin_request = optional(object({
@@ -157,7 +157,7 @@ variable "zero_trust_config" {
             tls_timeout              = optional(number)
           }))
           path = optional(string)
-        })), [])
+        }))
         origin_request = optional(object({
           access = optional(object({
             aud_tag   = optional(list(string))
