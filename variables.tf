@@ -184,7 +184,6 @@ variable "zero_trust_config" {
       }))
     })), {})
     virtual_networks = optional(map(object({
-      name               = string
       is_default_network = optional(bool, false)
       is_default         = optional(bool, false)
       comment            = optional(string)
