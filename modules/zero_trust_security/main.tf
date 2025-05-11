@@ -192,6 +192,8 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "with_cloudflared_con
   account_id = var.account_id
   tunnel_id  = cloudflare_zero_trust_tunnel_cloudflared.this[each.key].id
 
+  source = each.value.config_src
+
   config = {
     ingress = [
       for ingress in each.value.cloudflared_config.ingress : {
