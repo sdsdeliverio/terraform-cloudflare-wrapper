@@ -9,7 +9,7 @@ locals {
 }
 
 resource "cloudflare_bot_management" "this" {
-  for_each           = { for zone in var.zones : zone.name => zone }
+  for_each           = { for zone in var.dns_networking_config.zones : zone.name => zone }
   zone_id            = each.value.id
   ai_bots_protection = var.cloudflare_bot_management.ai_bots_protection
   fight_mode         = var.cloudflare_bot_management.fight_mode
