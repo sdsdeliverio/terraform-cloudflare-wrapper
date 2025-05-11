@@ -338,7 +338,7 @@ variable "tunnels" {
     })), [])
     cloudflared_config = optional(object({
       ingress = list(object({
-        hostname = string
+        hostname = optional(string)
         service  = string
         origin_request = optional(object({
           access = optional(object({
