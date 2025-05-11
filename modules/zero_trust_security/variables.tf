@@ -360,7 +360,7 @@ variable "tunnels" {
           tcp_keep_alive           = optional(number)
           tls_timeout              = optional(number)
         }))
-        path = optional(string)
+        path = optional(string, "/")
       }))
       origin_request = object({
         access = optional(object({
