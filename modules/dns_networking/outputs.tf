@@ -15,6 +15,11 @@ output "dns_records" {
   }
 }
 
+output "zone_ids" {
+  description = "Map of zone ids"
+  value       = { for k, v in var.zones : k => v.id }
+}
+
 # output "dns_settings" {
 #   description = "Map of zone DNS settings"
 #   value       = { for k, v in cloudflare_zone_dns_settings.settings : k => {

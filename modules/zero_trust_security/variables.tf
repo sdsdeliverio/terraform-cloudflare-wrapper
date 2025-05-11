@@ -1,5 +1,11 @@
 # Variables for zero_trust_security
 
+variable "environment" {
+  description = "Environment name for resource tagging"
+  type        = string
+  default     = "production"
+}
+
 variable "account_id" {
   description = "The Account ID to manage resources"
   type        = string
@@ -337,8 +343,9 @@ variable "tunnels" {
     })), [])
     cloudflared_config = optional(object({
       ingress = list(object({
-        hostname = optional(string)
-        service  = string
+        hostname                 = optional(string)
+        auto_create_dns_zone_key = optional(string, null)
+        service                  = string
         origin_request = optional(object({
           access = optional(object({
             aud_tag   = optional(list(string))
@@ -410,4 +417,12 @@ variable "cloudflare_secrets" {
     tunnel_secrets = {}
   }
   sensitive = true
+}
+
+variable "zones" {
+  description = "List of DNS zones to manage"
+  type = list(object({
+    name = string
+    id   = string
+  }))
 }

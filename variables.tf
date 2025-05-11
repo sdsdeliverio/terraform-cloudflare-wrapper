@@ -134,8 +134,9 @@ variable "zero_trust_config" {
       })), [])
       cloudflared_config = optional(object({
         ingress = list(object({
-          hostname = optional(string)
-          service  = string
+          hostname                 = optional(string)
+          service                  = string
+          auto_create_dns_zone_key = optional(string)
           origin_request = optional(object({
             access = optional(object({
               aud_tag   = optional(list(string))

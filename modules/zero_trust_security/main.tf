@@ -79,6 +79,7 @@ resource "cloudflare_zero_trust_access_application" "this" {
   }
 }
 
+
 # Access Group
 # resource "cloudflare_access_group" "group" {
 #   for_each = { for group in var.access_groups : group.name => group }
@@ -238,7 +239,7 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "with_cloudflared_con
         required  = each.value.cloudflared_config.origin_request.access.required
       } : null
       ca_pool                  = each.value.cloudflared_config.origin_request.ca_pool
-      connect_timeout          = each.value.cloudflared_config.origin_request.connect_timeout
+      connect_timeout          = each.value.cloudflared_config.connect_timeout
       disable_chunked_encoding = each.value.cloudflared_config.disable_chunked_encoding
       http2_origin             = each.value.cloudflared_config.http2_origin
       http_host_header         = each.value.cloudflared_config.http_host_header
@@ -284,3 +285,57 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "without_cloudflared_
   }
 }
 
+# variable "tunnels" {
+#   description = "List of Zero Trust tunnels"
+#   type = map(object({
+#     name       = string
+#     config_src = optional(string, "cloudflare")
+#     routes = optional(list(object({
+#       virtual_network = string
+#       network         = string
+#       comment         = string
+#     })), [])
+#     cloudflared_config = optional(object({
+#       ingress = list(object({
+#         hostname        = optional(string)
+#         auto_create_dns_zone_key = optional(string, null)
+# Create DNS records for hostnames in tunnel configs where auto_create_dns is different from null otherwise use it as key for lookup in var.zones.name and the  get the id
+#   var.tunnels[*].cloudflared_config.ingress[*].auto_create_dns_zone_key use this key to create the dns records for each ingress.hostname
+resource "cloudflare_dns_record" "tunnel_dns_records" {
+  for_each = {
+    for pair in flatten([
+      for tunnel_key, tunnel in var.tunnels : [
+        for ingress in tunnel.cloudflared_config.ingress : {
+          tunnel_key = tunnel_key
+          hostname   = ingress.hostname
+          zone_key   = ingress.auto_create_dns_zone_key
+        }
+        if ingress.auto_create_dns_zone_key != null && ingress.hostname != null
+      ]
+      ]) : "${pair.tunnel_key}-${pair.hostname}" => {
+      name = pair.hostname
+      zone_id = [
+        for zone in var.zones : zone.id
+        if zone.name == pair.zone_key
+      ][0]
+      type    = "CNAME"
+      content = "${cloudflare_zero_trust_tunnel_cloudflared.this[pair.tunnel_key].id}.cfargotunnel.com"
+      ttl     = 1
+      proxied = true
+      comment = "Auto-created by Terraform for tunnel [${pair.tunnel_key}]"
+    }
+  }
+
+  zone_id = each.value.zone_id
+  name    = each.value.name
+  type    = each.value.type
+  content = each.value.content
+  ttl     = each.value.ttl
+  proxied = each.value.proxied
+  comment = each.value.comment
+
+  depends_on = [
+    cloudflare_zero_trust_tunnel_cloudflared.this,
+    cloudflare_zero_trust_tunnel_cloudflared_config.with_cloudflared_config
+  ]
+}

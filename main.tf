@@ -82,11 +82,13 @@ module "zero_trust_security" {
   count  = var.enabled_modules["zero_trust_security"] ? 1 : 0
   source = "./modules/zero_trust_security"
 
-  default_zone_id = var.dns_networking_config.zones[0].id
-
+  zones              = var.dns_networking_config.zones
+  default_zone_id    = var.dns_networking_config.zones[0].id
+  environment        = var.environment
+  account_id         = var.account_id
   cloudflare_secrets = var.cloudflare_secrets
 
-  account_id          = var.account_id
+
   access_applications = try(var.zero_trust_config.access_applications, {})
   access_policies     = try(var.zero_trust_config.access_policies, {})
   tunnels             = try(var.zero_trust_config.tunnels, {})

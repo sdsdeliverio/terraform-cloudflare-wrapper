@@ -85,3 +85,11 @@ output "zero_trust_security" {
   }
   sensitive = false
 }
+
+output "dns_networking" {
+  description = "DNS networking module outputs"
+  value = {
+    zone_ids = module.dns_networking[*].zone_ids
+  }
+  sensitive = false
+}

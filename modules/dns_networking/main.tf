@@ -46,5 +46,3 @@ resource "cloudflare_dns_record" "this" {
   priority = each.value.type == "MX" ? each.value.priority : null
 
 }
-
-
