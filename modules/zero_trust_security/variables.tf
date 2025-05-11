@@ -394,6 +394,7 @@ variable "virtual_networks" {
   type = map(object({
     name               = string
     is_default_network = optional(bool, false)
+    is_default         = optional(bool, false)
     comment            = optional(string)
   }))
   default = {}
