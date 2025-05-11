@@ -348,7 +348,7 @@ variable "tunnels" {
           ca_pool                  = optional(string)
           connect_timeout          = optional(number)
           disable_chunked_encoding = optional(bool)
-          http2_origin             = optional(bool)
+          http2_origin             = optional(bool, true)
           http_host_header         = optional(string)
           keep_alive_connections   = optional(number)
           keep_alive_timeout       = optional(number)
@@ -381,7 +381,10 @@ variable "tunnels" {
         tcp_keep_alive           = optional(number)
         tls_timeout              = optional(number)
       }))
-    }),null)
+      warp_routing = optional(object({
+        enabled = bool
+      }), { enabled = true })
+    }), null)
   }))
   default = {}
 }
