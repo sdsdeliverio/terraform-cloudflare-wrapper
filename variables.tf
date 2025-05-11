@@ -178,7 +178,7 @@ variable "zero_trust_config" {
           tcp_keep_alive           = optional(number)
           tls_timeout              = optional(number)
         }), null)
-      }), null)
+      }))
     })), {})
     virtual_networks = optional(map(object({
       name               = string

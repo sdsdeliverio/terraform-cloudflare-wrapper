@@ -381,8 +381,8 @@ variable "tunnels" {
         proxy_type               = optional(string)
         tcp_keep_alive           = optional(number)
         tls_timeout              = optional(number)
-      }), null)
-    }), null)
+      }))
+    }), {})
   }))
   default = {}
 }
