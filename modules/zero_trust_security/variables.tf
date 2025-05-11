@@ -337,7 +337,7 @@ variable "tunnels" {
       comment         = string
     })), [])
     cloudflared_config = optional(object({
-      ingress = list(object({
+      ingress = optional(list(object({
         hostname = optional(string)
         service  = string
         origin_request = optional(object({
@@ -360,9 +360,9 @@ variable "tunnels" {
           tcp_keep_alive           = optional(number)
           tls_timeout              = optional(number)
         }))
-        path = optional(string, "/")
-      }))
-      origin_request = object({
+        path = optional(string)
+      })), [])
+      origin_request = optional(object({
         access = optional(object({
           aud_tag   = optional(list(string))
           team_name = optional(string)
@@ -381,8 +381,8 @@ variable "tunnels" {
         proxy_type               = optional(string)
         tcp_keep_alive           = optional(number)
         tls_timeout              = optional(number)
-      })
-    }))
+      }), null)
+    }), null)
   }))
   default = {}
 }

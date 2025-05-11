@@ -133,7 +133,7 @@ variable "zero_trust_config" {
         comment         = string
       })), [])
       cloudflared_config = optional(object({
-        ingress = list(object({
+        ingress = optional(list(object({
           hostname = optional(string)
           service  = string
           origin_request = optional(object({
@@ -157,8 +157,8 @@ variable "zero_trust_config" {
             tls_timeout              = optional(number)
           }))
           path = optional(string)
-        }))
-        origin_request = object({
+        })), [])
+        origin_request = optional(object({
           access = optional(object({
             aud_tag   = optional(list(string))
             team_name = optional(string)
@@ -177,8 +177,8 @@ variable "zero_trust_config" {
           proxy_type               = optional(string)
           tcp_keep_alive           = optional(number)
           tls_timeout              = optional(number)
-        })
-      }), {})
+        }), null)
+      }), null)
     })), {})
     virtual_networks = optional(map(object({
       name               = string
