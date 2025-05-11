@@ -199,7 +199,7 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "with_cloudflared_con
   ]
 
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = try(cloudflare_zero_trust_tunnel_cloudflared.this[each.key], null) != null ? true : false
   }
 }
 
