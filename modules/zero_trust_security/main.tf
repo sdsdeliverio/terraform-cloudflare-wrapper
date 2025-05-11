@@ -137,10 +137,10 @@ resource "cloudflare_zero_trust_access_application" "this" {
 resource "cloudflare_zero_trust_tunnel_cloudflared" "this" {
   for_each = var.tunnels
 
-  account_id = var.account_id
-  name       = each.value.name
-  config_src = each.value.config_src
-  tunnel_secret  = try(var.cloudflare_secrets.tunnel_secrets[each.key].secret, null)
+  account_id    = var.account_id
+  name          = each.value.name
+  config_src    = each.value.config_src
+  tunnel_secret = try(var.cloudflare_secrets.tunnel_secrets[each.key].secret, null)
 }
 
 resource "cloudflare_zero_trust_tunnel_cloudflared_route" "this" {
@@ -153,7 +153,7 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_route" "this" {
           route      = route
         }
       ]
-    ]) : route.key => {
+      ]) : route.key => {
       tunnel_key = route.tunnel_key
       route      = route.route
     }
@@ -181,7 +181,7 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_virtual_network" "this" {
   comment            = try(each.value.comment, null)
 }
 
-resource "cloudflare_zero_trust_tunnel_cloudflared_config" "this" {
+resource "cloudflare_zero_trust_tunnel_cloudflared_config" "with_cloudflared_config" {
   for_each = {
     for tunnel_key, tunnel in var.tunnels : tunnel_key => tunnel
     if contains(keys(tunnel), "cloudflared_config")
@@ -190,14 +190,36 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "this" {
   account_id = var.account_id
   tunnel_id  = cloudflare_zero_trust_tunnel_cloudflared.this[each.key].id
 
-  config     =  try(each.value.cloudflared_config, null)
+  config = each.value.cloudflared_config
+
+  source = each.value.config_src
 
   depends_on = [
     cloudflare_zero_trust_tunnel_cloudflared.this,
   ]
 
   lifecycle {
-    prevent_destroy       = true
+    prevent_destroy = true
+  }
+}
+
+resource "cloudflare_zero_trust_tunnel_cloudflared_config" "without_cloudflared_config" {
+  for_each = {
+    for tunnel_key, tunnel in var.tunnels : tunnel_key => tunnel
+    if !contains(keys(tunnel), "cloudflared_config") && cloudflare_zero_trust_tunnel_cloudflared_config.with_cloudflared_config[tunnel_key] == null
+  }
+
+  account_id = var.account_id
+  tunnel_id  = cloudflare_zero_trust_tunnel_cloudflared.this[each.key].id
+
+  source = each.value.config_src
+
+  depends_on = [
+    cloudflare_zero_trust_tunnel_cloudflared.this,
+  ]
+
+  lifecycle {
+    prevent_destroy = false
   }
 }
 
