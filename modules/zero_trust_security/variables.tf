@@ -392,7 +392,6 @@ variable "tunnels" {
 variable "virtual_networks" {
   description = "List of Zero Trust virtual networks"
   type = map(object({
-    name               = string
     is_default_network = optional(bool, false)
     is_default         = optional(bool, false)
     comment            = optional(string)
