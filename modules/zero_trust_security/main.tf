@@ -262,9 +262,9 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "with_cloudflared_con
     cloudflare_zero_trust_access_application.this
   ]
 
-  lifecycle {
-    prevent_destroy = false
-  }
+  # lifecycle {
+  #   prevent_destroy = false
+  # }
 }
 
 resource "cloudflare_zero_trust_tunnel_cloudflared_config" "without_cloudflared_config" {
@@ -282,9 +282,9 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "without_cloudflared_
     cloudflare_zero_trust_tunnel_cloudflared.this,
   ]
 
-  lifecycle {
-    prevent_destroy = false
-  }
+  # lifecycle {
+  #   prevent_destroy = false
+  # }
 }
 
 # variable "tunnels" {
