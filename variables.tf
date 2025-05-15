@@ -28,6 +28,7 @@ variable "enabled_modules" {
   default = {
     account_authentication  = true
     dns_networking          = true
+    email_management        = true
     security_bot_management = true
     ssl_tls_certificates    = true
     workers                 = true
@@ -65,6 +66,26 @@ variable "dns_networking_config" {
   default = {
     zones   = [],
     records = []
+  }
+}
+
+variable "email_management_config" {
+  description = "Configuration for the email management module"
+  type = object({
+    catch_all_rule = optional(object({
+      catchall_email = optional(string)
+    }))
+    aliasroute2email = optional(list(object({
+      alias          = optional(string)
+      action = optional(string, "forward")
+      email_to_route = optional(string)
+    })), [])
+  })
+  default = {
+    aliasroute2email = []
+    catch_all_rule = {
+      action       = "drop"
+    }
   }
 }
 

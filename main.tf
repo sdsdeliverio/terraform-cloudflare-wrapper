@@ -48,6 +48,24 @@ module "dns_networking" {
   dns_firewall_rules = try(var.dns_networking_config.firewall_rules, [])
 }
 
+# Email Management Module
+module "email_management" {
+  count  = var.enabled_modules["email_management"] ? 1 : 0
+  source = "./modules/email_management"
+
+  zones           = var.dns_networking_config.zones
+  default_zone_id = var.dns_networking_config.zones[0].id
+
+  account_id  = var.account_id
+  environment = var.environment
+
+  catch_all_rule = try(var.email_management_config.catch_all_rule, null)
+
+  aliasroute2email = try(var.email_management_config.aliasroute2email, [])
+
+  depends_on = [module.dns_networking]
+}
+
 # # Security Bot Management Module
 # module "security_bot_management" {
 #   count  = var.enabled_modules["security_bot_management"] ? 1 : 0
