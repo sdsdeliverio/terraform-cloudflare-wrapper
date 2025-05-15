@@ -55,14 +55,14 @@ resource "cloudflare_email_routing_catch_all" "this" {
 }
 
 # We need to change this to iterate over the zones depending on the emails we manage for each zone
-resource "cloudflare_email_routing_settings" "this" {
-  zone_id = local.zones_map[var.default_zone_id].id
-}
+# resource "cloudflare_email_routing_settings" "this" {
+#   zone_id = local.zones_map[var.default_zone_id].id
+# }
 
-resource "cloudflare_email_routing_dns" "this" {
-  zone_id = local.zones_map[var.default_zone_id].id
-  name = local.zones_map[var.default_zone_id].name
-}
+# resource "cloudflare_email_routing_dns" "this" {
+#   zone_id = local.zones_map[var.default_zone_id].id
+#   name = local.zones_map[var.default_zone_id].name
+# }
 
 resource "cloudflare_email_routing_address" "this" {
   for_each = local.routing_emails
