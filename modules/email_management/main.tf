@@ -67,7 +67,7 @@ resource "cloudflare_email_routing_rule" "forwarding" {
   zone_id = local.zones_map[var.default_zone_id].id
   actions = [{
     type  = "forward"
-    value = ["${each.value.email}}"]
+    value = ["${each.value.email}"]
   }]
   matchers = [{
     type  = "literal"
