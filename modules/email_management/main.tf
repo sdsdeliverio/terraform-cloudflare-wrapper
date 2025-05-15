@@ -67,12 +67,12 @@ resource "cloudflare_email_routing_rule" "forwarding" {
   zone_id = local.zones_map[var.default_zone_id].id
   actions = [{
     type  = "forward"
-    value = ["${each.value.alias}@${local.zones_map[var.default_zone_id].name}"]
+    value = ["${each.value.email}}"]
   }]
   matchers = [{
     type  = "literal"
     field = "to"
-    value = each.value.email
+    value = "${each.value.alias}@${local.zones_map[var.default_zone_id].name}"
   }]
   enabled  = true
   name     = "Forward alias ${each.value.alias} to ${each.value.email} rule. Managed by Terraform"
