@@ -77,14 +77,14 @@ variable "email_management_config" {
     }))
     aliasroute2email = optional(list(object({
       alias          = optional(string)
-      action = optional(string, "forward")
+      action         = optional(string, "forward")
       email_to_route = optional(string)
     })), [])
   })
   default = {
     aliasroute2email = []
     catch_all_rule = {
-      action       = "drop"
+      action = "drop"
     }
   }
 }

@@ -14,8 +14,8 @@ variable "account_id" {
 variable "zones" {
   description = "List of DNS zones to manage"
   type = list(object({
-    name                 = string
-    id                   = string
+    name = string
+    id   = string
   }))
 }
 
@@ -24,7 +24,7 @@ variable "default_zone_id" {
   type        = string
 }
 
-variable "catch_all_rule" { 
+variable "catch_all_rule" {
   description = "Catch all rule for email routing"
   type = object({
     catchall_email = optional(string)
@@ -44,6 +44,6 @@ variable "aliasroute2email" {
   type = list(object({
     alias          = string
     email_to_route = optional(string)
-    action       = optional(string, "forward")
+    action         = optional(string, "forward")
   }))
 }

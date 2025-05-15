@@ -9,11 +9,11 @@ terraform {
 
 locals {
   email_routing_addresses = {
-    for config in var.aliasroute2email : 
+    for config in var.aliasroute2email :
     "${var.environment}/${config.alias}-[${base64sha256(config.alias)}]" => {
-      email     = config.email_to_route
-      action    = config.action
-      alias     = config.alias
+      email  = config.email_to_route
+      action = config.action
+      alias  = config.alias
     }
   }
 
@@ -41,7 +41,7 @@ resource "cloudflare_email_routing_catch_all" "this" {
   zone_id = local.zones_map[var.default_zone_id].id
   actions = [{
     type  = try(var.catch_all_rule.catchall_email, null) == null ? "drop" : "forward"
-    value = [try (var.catch_all_rule.catchall_email, null)]
+    value = [try(var.catch_all_rule.catchall_email, null)]
   }]
   matchers = [{
     type = "all"
@@ -84,7 +84,7 @@ resource "cloudflare_email_routing_rule" "drop" {
 
   zone_id = local.zones_map[var.default_zone_id].id
   actions = [{
-    type  = "drop"
+    type = "drop"
   }]
   matchers = []
   enabled  = true
