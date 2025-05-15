@@ -41,7 +41,7 @@ resource "cloudflare_email_routing_catch_all" "this" {
   zone_id = local.zones_map[var.default_zone_id].id
   actions = [{
     type  = try(var.catch_all_rule.catchall_email, null) == null ? "drop" : "forward"
-    value = [try(var.catch_all_rule.catchall_email, null)]
+    value = try([var.catch_all_rule.catchall_email], [])
   }]
   matchers = [{
     type = "all"
