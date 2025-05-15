@@ -54,6 +54,16 @@ resource "cloudflare_email_routing_catch_all" "this" {
   }
 }
 
+# We need to change this to iterate over the zones depending on the emails we manage for each zone
+resource "cloudflare_email_routing_settings" "this" {
+  zone_id = local.zones_map[var.default_zone_id].id
+}
+
+resource "cloudflare_email_routing_dns" "this" {
+  zone_id = local.zones_map[var.default_zone_id].id
+  name = local.zones_map[var.default_zone_id].name
+}
+
 resource "cloudflare_email_routing_address" "this" {
   for_each = local.routing_emails
 
@@ -95,17 +105,6 @@ resource "cloudflare_email_routing_rule" "drop" {
   name     = "Drop all emails to ${each.value.alias} rule. Managed by Terraform"
   priority = 0
 }
-
-
-# resource "cloudflare_email_routing_dns" "example_email_routing_dns" {
-#   zone_id = var.zone_id
-#   name = var.domain_name
-# }
-
-
-# resource "cloudflare_email_routing_settings" "example_email_routing_settings" {
-#   zone_id = "023e105f4ecef8ad9ca31a8372d0c353"
-# }
 
 # resource "cloudflare_email_security_block_sender" "example_email_security_block_sender" {
 #   account_id   = "023e105f4ecef8ad9ca31a8372d0c353"
