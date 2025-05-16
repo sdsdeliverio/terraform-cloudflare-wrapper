@@ -10,7 +10,7 @@ terraform {
 locals {
   email_routing_addresses = {
     for config in var.aliasroute2email :
-    "${var.environment}/${config.alias}-[${base64sha256(config.alias)}]" => {
+    "${var.environment}/${config.alias}-[${base64sha256("${config.alias}_${config.email_to_route}")}]" => {
       email  = config.email_to_route
       action = config.action
       alias  = config.alias
