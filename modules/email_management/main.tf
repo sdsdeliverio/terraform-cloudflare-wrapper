@@ -10,7 +10,7 @@ terraform {
 locals {
   email_routing_addresses = {
     for config in var.aliasroute2email :
-    "${var.environment}/${config.alias}-[${base64sha256("${config.alias}_${config.email_to_route}")}]" => {
+    "${var.environment}/${config.alias}-[${base64sha256(config.alias)}]" => {
       email  = config.email_to_route
       action = config.action
       alias  = config.alias
@@ -18,8 +18,13 @@ locals {
   }
 
   routing_emails = {
-    for key, config in local.email_routing_addresses : "${var.environment}/${config.email}-route[${base64sha256(config.email)}]" => config
+    for key, config in local.email_routing_addresses : config.email => config...
     if config.email != null
+  }
+
+  # Convert from grouped map to regular map with unique emails
+  unique_routing_emails = {
+    for email, configs in local.routing_emails : email => configs[0]
   }
 
   forwarding_rules = {
@@ -65,7 +70,7 @@ resource "cloudflare_email_routing_catch_all" "this" {
 # }
 
 resource "cloudflare_email_routing_address" "this" {
-  for_each = local.routing_emails
+  for_each = local.unique_routing_emails
 
   account_id = var.account_id
   email      = each.value.email
