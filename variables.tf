@@ -144,7 +144,7 @@ variable "cloudflare_secrets" {
 # Zero Trust Security Module Variables
 variable "zero_trust_config" {
   description = "Configuration for the Zero Trust security module"
-  type = object({
+  type = optional(object({
     tunnels = optional(map(object({
       name       = string
       config_src = optional(string, "cloudflare")
@@ -490,7 +490,7 @@ variable "zero_trust_config" {
       purpose_justification_required = optional(bool, false)
       isolation_required             = optional(bool, false)
     })))
-  })
+  }))
   default = {
     tunnels             = {}
     virtual_networks    = {}
