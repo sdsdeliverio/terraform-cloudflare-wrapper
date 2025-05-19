@@ -41,5 +41,6 @@ variable "aliasroute2email" {
     alias          = string
     email_to_route = optional(string)
     action         = optional(string, "forward")
+    zone_key       = optional(string)
   }))
 }

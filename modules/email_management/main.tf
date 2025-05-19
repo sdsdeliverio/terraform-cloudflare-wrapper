@@ -14,6 +14,7 @@ locals {
       email  = config.email_to_route
       action = config.action
       alias  = config.alias
+      zone_key = config.zone_key
     }
   }
 
