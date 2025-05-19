@@ -77,11 +77,13 @@ variable "email_management_config" {
   type = object({
     catch_all_rule = optional(object({
       catchall_email = optional(string)
+      zone_key       = optional(string)
     }))
     aliasroute2email = optional(list(object({
       alias          = optional(string)
       action         = optional(string, "forward")
       email_to_route = optional(string)
+      zone_key       = optional(string)
     })), [])
   })
   default = {
