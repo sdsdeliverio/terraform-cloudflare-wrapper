@@ -18,7 +18,7 @@ locals {
   }
 
   routing_emails = {
-    for key, config in local.email_routing_addresses : config.email => config... 
+    for key, config in local.email_routing_addresses : config.email => config...
     if config.email != null
   }
 

@@ -53,7 +53,7 @@ module "email_management" {
   count  = var.enabled_modules["email_management"] ? 1 : 0
   source = "./modules/email_management"
 
-  zones           = var.zones
+  zones = var.zones
 
   account_id  = var.account_id
   environment = var.environment
@@ -99,7 +99,7 @@ module "zero_trust_security" {
   count  = var.enabled_modules["zero_trust_security"] ? 1 : 0
   source = "./modules/zero_trust_security"
 
-  zones              = var.zones
+  zones = var.zones
 
   environment        = var.environment
   account_id         = var.account_id

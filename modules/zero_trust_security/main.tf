@@ -316,7 +316,7 @@ resource "cloudflare_dns_record" "tunnel_dns_records" {
       ]
       ]) : "${var.environment}/${pair.hostname}_${pair.tunnel_key}-[${base64sha256(pair.hostname)}]" => {
 
-      name = pair.hostname
+      name    = pair.hostname
       zone_id = var.zones[pair.zone_key].id
       type    = "CNAME"
       content = "${cloudflare_zero_trust_tunnel_cloudflared.this[pair.tunnel_key].id}.cfargotunnel.com"
