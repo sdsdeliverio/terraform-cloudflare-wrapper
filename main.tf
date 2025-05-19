@@ -54,8 +54,7 @@ module "email_management" {
   source = "./modules/email_management"
 
   zones           = var.zones
-  zone_key        = var.zone_key
-
+  
   account_id  = var.account_id
   environment = var.environment
 

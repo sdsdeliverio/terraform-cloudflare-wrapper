@@ -19,11 +19,6 @@ variable "zones" {
   }))
 }
 
-variable "default_zone_id" {
-  description = "Default Zone ID to manage resources"
-  type        = string
-}
-
 variable "catch_all_rule" {
   description = "Catch all rule for email routing"
   type = object({

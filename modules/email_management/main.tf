@@ -18,7 +18,7 @@ locals {
   }
 
   routing_emails = {
-    for key, config in local.email_routing_addresses : config.email => config...
+    for key, config in local.email_routing_addresses : config.email => config... 
     if config.email != null
   }
 
@@ -43,7 +43,7 @@ locals {
 
 
 resource "cloudflare_email_routing_catch_all" "this" {
-  zone_id = local.zones_map[var.default_zone_id].id
+  zone_id = local.zones_map[var.catch_all_rule.zone_key].id
   actions = [{
     type  = try(var.catch_all_rule.catchall_email, null) == null ? "drop" : "forward"
     value = try([var.catch_all_rule.catchall_email], [])
@@ -79,7 +79,7 @@ resource "cloudflare_email_routing_address" "this" {
 resource "cloudflare_email_routing_rule" "forwarding" {
   for_each = local.forwarding_rules
 
-  zone_id = local.zones_map[var.default_zone_id].id
+  zone_id = local.zones_map[each.value.zone_key].id
   actions = [{
     type  = "forward"
     value = ["${each.value.email}"]
@@ -87,7 +87,7 @@ resource "cloudflare_email_routing_rule" "forwarding" {
   matchers = [{
     type  = "literal"
     field = "to"
-    value = "${each.value.alias}@${local.zones_map[var.default_zone_id].name}"
+    value = "${each.value.alias}@${local.zones_map[each.value.zone_key].name}"
   }]
   enabled  = true
   name     = "Forward alias ${each.value.alias} to ${each.value.email} rule. Managed by Terraform"
@@ -97,14 +97,14 @@ resource "cloudflare_email_routing_rule" "forwarding" {
 resource "cloudflare_email_routing_rule" "drop" {
   for_each = local.drop_rules
 
-  zone_id = local.zones_map[var.default_zone_id].id
+  zone_id = local.zones_map[each.value.zone_key].id
   actions = [{
     type = "drop"
   }]
   matchers = [{
     type  = "literal"
     field = "to"
-    value = "${each.value.alias}@${local.zones_map[var.default_zone_id].name}"
+    value = "${each.value.alias}@${local.zones_map[each.value.zone_key].name}"
   }]
   enabled  = true
   name     = "Drop all emails to ${each.value.alias} rule. Managed by Terraform"
