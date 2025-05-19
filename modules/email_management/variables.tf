@@ -23,6 +23,7 @@ variable "catch_all_rule" {
   description = "Catch all rule for email routing"
   type = object({
     catchall_email = optional(string)
+    zone_key     = optional(string)
   })
 }
 
