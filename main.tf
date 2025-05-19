@@ -54,7 +54,7 @@ module "email_management" {
   source = "./modules/email_management"
 
   zones           = var.zones
-  
+
   account_id  = var.account_id
   environment = var.environment
 
@@ -100,7 +100,7 @@ module "zero_trust_security" {
   source = "./modules/zero_trust_security"
 
   zones              = var.dns_networking_config.zones
-  default_zone_id    = var.dns_networking_config.zones[0].id
+
   environment        = var.environment
   account_id         = var.account_id
   cloudflare_secrets = var.cloudflare_secrets
