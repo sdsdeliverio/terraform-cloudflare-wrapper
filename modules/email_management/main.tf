@@ -47,17 +47,14 @@ resource "cloudflare_email_routing_catch_all" "this" {
   zone_id = var.zones[var.catch_all_rule.zone_key].id
   actions = [{
     type  = try(var.catch_all_rule.catchall_email, null) == null ? "drop" : "forward"
-    value = try([var.catch_all_rule.catchall_email], [])
+    value = try(var.catch_all_rule.catchall_email, null) == null ? [] : [var.catch_all_rule.catchall_email]
   }]
   matchers = [{
     type = "all"
   }]
   enabled = true
-  name    = "Catch all ${try(var.catch_all_rule.catchall_email, null) == null ? "" : var.catch_all_rule.catchall_email} ${try(var.catch_all_rule.catchall_email, null) == null ? "drop" : "forward"} Email rule."
-
-  lifecycle {
-    prevent_destroy = false
-  }
+  name    = "Catch all ${try(var.catch_all_rule.catchall_email, null) == null ? "drop" : "forward"} Email rule."
+  
 }
 
 # We need to change this to iterate over the zones depending on the emails we manage for each zone
