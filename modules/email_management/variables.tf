@@ -23,7 +23,7 @@ variable "catch_all_rule" {
   description = "Catch all rule for email routing"
   type = object({
     catchall_email = optional(string)
-    zone_key     = optional(string)
+    zone_key       = optional(string)
   })
   default = null
 }
@@ -42,6 +42,6 @@ variable "aliasroute2email" {
     alias          = string
     email_to_route = optional(string)
     action         = optional(string, "forward")
-          zone_key       = optional(string)
+    zone_key       = optional(string)
   }))
 }

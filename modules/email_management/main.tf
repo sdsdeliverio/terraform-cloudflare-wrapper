@@ -11,9 +11,9 @@ locals {
   email_routing_addresses = {
     for config in var.aliasroute2email :
     "${var.environment}/${config.alias}-[${base64sha256(config.alias)}]" => {
-      email  = config.email_to_route
-      action = config.action
-      alias  = config.alias
+      email    = config.email_to_route
+      action   = config.action
+      alias    = config.alias
       zone_key = config.zone_key
     }
   }
@@ -43,7 +43,7 @@ locals {
 
 
 resource "cloudflare_email_routing_catch_all" "this" {
-  count = var.catch_all_rule != null ? 1 : 0
+  count   = var.catch_all_rule != null ? 1 : 0
   zone_id = var.zones[var.catch_all_rule.zone_key].id
   actions = [{
     type  = try(var.catch_all_rule.catchall_email, null) == null ? "drop" : "forward"
