@@ -13,7 +13,7 @@ variable "account_id" {
 
 variable "zones" {
   description = "List of DNS zones to manage"
-  type = list(object({
+  type = map(object({
     name = string
     id   = string
   }))

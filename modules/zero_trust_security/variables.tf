@@ -415,7 +415,7 @@ variable "cloudflare_secrets" {
 
 variable "zones" {
   description = "List of DNS zones to manage"
-  type = list(object({
+  type = map(object({
     name = string
     id   = string
   }))
