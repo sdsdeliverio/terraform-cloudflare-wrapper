@@ -56,7 +56,7 @@ resource "cloudflare_email_routing_catch_all" "this" {
   name    = "Catch all ${try(var.catch_all_rule.catchall_email, null) == null ? "" : var.catch_all_rule.catchall_email} ${try(var.catch_all_rule.catchall_email, null) == null ? "drop" : "forward"} Email rule."
 
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
 }
 
