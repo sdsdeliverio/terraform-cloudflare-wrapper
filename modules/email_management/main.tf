@@ -103,7 +103,7 @@ resource "cloudflare_email_routing_rule" "drop" {
   matchers = [{
     type  = "literal"
     field = "to"
-    value = "${each.value.alias}@${lvar.zones[each.value.zone_key].name}"
+    value = "${each.value.alias}@${var.zones[each.value.zone_key].name}"
   }]
   enabled  = true
   name     = "Drop all emails to ${each.value.alias} rule. Managed by Terraform"
