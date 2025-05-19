@@ -99,7 +99,7 @@ module "zero_trust_security" {
   count  = var.enabled_modules["zero_trust_security"] ? 1 : 0
   source = "./modules/zero_trust_security"
 
-  zones              = var.dns_networking_config.zones
+  zones              = var.zones
 
   environment        = var.environment
   account_id         = var.account_id
