@@ -42,7 +42,7 @@ module "dns_networking" {
   environment = var.environment
 
   account_id = var.account_id
-  zones      = var.dns_networking_config.zones
+  zones      = var.zones
   records    = var.dns_networking_config.records
 
   dns_firewall_rules = try(var.dns_networking_config.firewall_rules, [])
@@ -53,8 +53,8 @@ module "email_management" {
   count  = var.enabled_modules["email_management"] ? 1 : 0
   source = "./modules/email_management"
 
-  zones           = var.dns_networking_config.zones
-  default_zone_id = var.dns_networking_config.zones[0].id
+  zones           = var.zones
+  zone_key        = var.zone_key
 
   account_id  = var.account_id
   environment = var.environment

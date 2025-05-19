@@ -15,6 +15,19 @@ variable "environment" {
   default     = "production"
 }
 
+variable "zones" {
+  description = "Zones to manage"
+  type = map(object({
+    id                   = string
+    name                 = string
+    paused               = optional(bool, false)
+    plan                 = optional(string, "free")
+    type                 = optional(string, "full")
+    dns_settings_enabled = optional(bool, true)
+    enable_dnssec        = optional(bool, true)
+  }))
+}
+
 variable "tags" {
   description = "Default tags to apply to all resources"
   type        = map(string)
@@ -41,15 +54,6 @@ variable "enabled_modules" {
 variable "dns_networking_config" {
   description = "List of zones and their DNS records configurations"
   type = object({
-    zones = list(object({
-      name                 = string
-      id                   = string
-      paused               = optional(bool, false)
-      plan                 = optional(string, "free")
-      type                 = optional(string, "full")
-      dns_settings_enabled = optional(bool, true)
-      enable_dnssec        = optional(bool, false)
-    }))
     records = optional(list(object({
       zone_key = string
       records = list(object({
@@ -64,7 +68,6 @@ variable "dns_networking_config" {
     })), [])
   })
   default = {
-    zones   = [],
     records = []
   }
 }

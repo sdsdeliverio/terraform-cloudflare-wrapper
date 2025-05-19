@@ -11,17 +11,11 @@ variable "account_id" {
   type        = string
 }
 
-variable "default_zone_id" {
-  description = "Default Zone ID to manage resources"
-  type        = string
-}
-
 variable "access_applications" {
   description = "Map of Cloudflare Access Applications"
   type = map(object({
     name                        = string
     domain                      = string
-    zone_id                     = optional(string, null)
     type                        = string
     allowed_idps                = optional(list(string), null)
     app_launcher_visible        = optional(bool, null)
