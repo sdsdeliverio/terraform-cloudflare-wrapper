@@ -496,16 +496,16 @@ variable "zero_trust_config" {
       isolation_required             = optional(bool, false)
     })))
     firewall_ruleset = optional(map(object({
-      kind = string
-      name = string
-      phase = string
-      zone_key = string
+      kind        = string
+      name        = string
+      phase       = string
+      zone_key    = string
       description = string
       rules = list(object({
-        action = string
+        action      = string
         description = string
-        expression = string
-        enabled = bool
+        expression  = string
+        enabled     = bool
         logging = object({
           enabled = bool
         })

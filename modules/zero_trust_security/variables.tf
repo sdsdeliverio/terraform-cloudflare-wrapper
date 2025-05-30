@@ -434,9 +434,21 @@ variable "firewall_ruleset" {
       description = string
       expression  = string
       enabled     = bool
-      logging = object({
+      logging = optional(object({
         enabled = bool
-      })
+      }), null)
+      ratelimit = optional(object({
+        characteristics     = list(string)
+        mitigation_timeout  = number
+        period             = number
+        requests_per_period = number
+        rate_exceeds       = string
+      }), null)
+      version = optional(string)
+      position = optional(object({
+        index = number
+      }))
+      customCounter = optional(bool, false)
     }))
   }))
   default = {}
