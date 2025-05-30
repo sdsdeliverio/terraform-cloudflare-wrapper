@@ -356,9 +356,7 @@ resource "cloudflare_ruleset" "this" {
       description = rule.description
       expression  = rule.expression
       enabled     = rule.enabled
-      logging = {
-        enabled = rule.logging.enabled
-      }
+    
     }
   ]
 }
