@@ -111,6 +111,7 @@ module "zero_trust_security" {
   tunnels             = try(var.zero_trust_config.tunnels, {})
   virtual_networks    = try(var.zero_trust_config.virtual_networks, {})
   gateway_policies    = try(var.zero_trust_config.gateway_policies, {})
+  cloudflare_ruleset  = try(var.zero_trust_config.cloudflare_ruleset, {})
 }
 
 # # Pages Delivery Module

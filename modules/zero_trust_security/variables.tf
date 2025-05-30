@@ -420,3 +420,24 @@ variable "zones" {
     id   = string
   }))
 }
+
+variable "cloudflare_ruleset" {
+  description = "Cloudflare Ruleset configuration"
+  type = map(object({
+    kind        = string
+    name        = string
+    phase       = string
+    description = string
+    zone_key    = string
+    rules = list(object({
+      action      = string
+      description = string
+      expression  = string
+      enabled     = bool
+      logging = object({
+        enabled = bool
+      })
+    }))
+  }))
+  default = {}
+}

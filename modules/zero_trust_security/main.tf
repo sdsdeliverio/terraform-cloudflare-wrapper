@@ -339,3 +339,26 @@ resource "cloudflare_dns_record" "tunnel_dns_records" {
     cloudflare_zero_trust_tunnel_cloudflared_config.with_cloudflared_config
   ]
 }
+
+# Cloudflare Ruleset
+resource "cloudflare_ruleset" "this" {
+  for_each = var.cloudflare_ruleset
+
+  kind        = each.value.kind
+  name        = each.value.name
+  phase       = each.value.phase
+  description = each.value.description
+  zone_id     = var.zones[each.value.zone_key].id
+
+  rules = [
+    for rule in each.value.rules : {
+      action      = rule.action
+      description = rule.description
+      expression  = rule.expression
+      enabled     = rule.enabled
+      logging = {
+        enabled = rule.logging.enabled
+      }
+    }
+  ]
+}
