@@ -495,6 +495,22 @@ variable "zero_trust_config" {
       purpose_justification_required = optional(bool, false)
       isolation_required             = optional(bool, false)
     })))
+    firewall_ruleset = optional(map(object({
+      kind = string
+      name = string
+      phase = string
+      zone_key = string
+      description = string
+      rules = list(object({
+        action = string
+        description = string
+        expression = string
+        enabled = bool
+        logging = object({
+          enabled = bool
+        })
+      }))
+    })))
   })
   default = {
     tunnels             = {}
@@ -503,6 +519,7 @@ variable "zero_trust_config" {
     gateway_settings    = {}
     access_applications = {}
     access_policies     = {}
+    firewall_ruleset    = {}
   }
 }
 

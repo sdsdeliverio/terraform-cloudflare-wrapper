@@ -421,7 +421,7 @@ variable "zones" {
   }))
 }
 
-variable "cloudflare_ruleset" {
+variable "firewall_ruleset" {
   description = "Cloudflare Ruleset configuration"
   type = map(object({
     kind        = string
