@@ -506,9 +506,16 @@ variable "zero_trust_config" {
         description = string
         expression  = string
         enabled     = bool
-        logging = object({
+        logging = optional(object({
           enabled = bool
-        })
+        }), null)
+        ratelimit = optional(object({
+          characteristics     = list(string)
+          mitigation_timeout  = number
+          period              = number
+          requests_per_period = number
+          rate_exceeds        = string
+        }), null)
       }))
     })))
   })

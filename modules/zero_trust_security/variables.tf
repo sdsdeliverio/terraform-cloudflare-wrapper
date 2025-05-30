@@ -440,9 +440,9 @@ variable "firewall_ruleset" {
       ratelimit = optional(object({
         characteristics     = list(string)
         mitigation_timeout  = number
-        period             = number
+        period              = number
         requests_per_period = number
-        rate_exceeds       = string
+        rate_exceeds        = string
       }), null)
       version = optional(string)
       position = optional(object({
