@@ -54,7 +54,7 @@ resource "cloudflare_email_routing_catch_all" "this" {
   }]
   enabled = true
   name    = "Catch all ${try(var.catch_all_rule.catchall_email, null) == null ? "drop" : "forward"} Email rule."
-  
+
 }
 
 # We need to change this to iterate over the zones depending on the emails we manage for each zone
