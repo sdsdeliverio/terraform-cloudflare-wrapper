@@ -16,7 +16,7 @@ resource "cloudflare_zero_trust_access_policy" "this" {
   account_id = var.account_id
   decision   = each.value.decision
   include    = each.value.include
-  app_count  = try(each.value.app_count, 0)
+
   exclude                        = each.value.exclude
   require                        = each.value.require
   session_duration               = each.value.session_duration
@@ -27,11 +27,11 @@ resource "cloudflare_zero_trust_access_policy" "this" {
   isolation_required             = each.value.isolation_required
 
   lifecycle {
-    create_before_destroy = false
+    create_before_destroy = true
     # prevent_destroy       = false
-    # ignore_changes = [
-    #   reusable
-    # ]
+    ignore_changes = [
+      app_count
+    ]
   }
 }
 
