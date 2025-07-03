@@ -451,5 +451,4 @@ variable "firewall_ruleset" {
       customCounter = optional(bool, false)
     }))
   }))
-  default = {}
 }
