@@ -342,7 +342,7 @@ resource "cloudflare_dns_record" "tunnel_dns_records" {
 
 # Cloudflare Ruleset
 resource "cloudflare_ruleset" "this" {
-  for_each = var.firewall_ruleset
+  for_each = var.firewall_ruleset != null ? var.firewall_ruleset : {}
 
   kind        = each.value.kind
   name        = each.value.name
