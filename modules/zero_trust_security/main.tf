@@ -29,9 +29,6 @@ resource "cloudflare_zero_trust_access_policy" "this" {
   lifecycle {
     create_before_destroy = true
     # prevent_destroy       = false
-    ignore_changes = [
-      app_count
-    ]
   }
 }
 
