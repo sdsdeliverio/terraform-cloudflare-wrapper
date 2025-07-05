@@ -172,7 +172,6 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_virtual_network" "this" {
   comment            = try(each.value.comment, null)
 
   lifecycle {
-    create_before_destroy = true
     prevent_destroy       = false
   }
 }
