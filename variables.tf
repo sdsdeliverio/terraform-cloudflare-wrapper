@@ -216,11 +216,13 @@ variable "zero_trust_config" {
       comment            = optional(string)
     })), {})
     gateway_policies = optional(map(object({
-      name    = string
-      enabled = optional(bool, true)
-      action  = string
-      filters = list(string)
-      traffic = list(string)
+      name           = string
+      enabled        = optional(bool, true)
+      action         = string
+      filters        = list(string)
+      traffic        = optional(string)
+      identity       = optional(string)
+      device_posture = optional(string)
     })), {})
     gateway_settings = optional(map(object({
       account_id                 = string
