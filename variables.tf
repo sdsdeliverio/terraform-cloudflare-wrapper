@@ -218,15 +218,9 @@ variable "zero_trust_config" {
     gateway_policies = optional(map(object({
       name    = string
       enabled = optional(bool, true)
-      rules = list(object({
-        name           = string
-        action         = string
-        enabled        = optional(bool, true)
-        filters        = list(string)
-        traffic        = list(string)
-        identity       = optional(list(string), [])
-        device_posture = optional(list(string), [])
-      }))
+      action  = string
+      filters = list(string)
+      traffic = list(string)
     })), {})
     gateway_settings = optional(map(object({
       account_id                 = string
@@ -518,13 +512,6 @@ variable "zero_trust_config" {
         }), null)
       }))
     })))
-    gateway_policies = optional(map(object({
-      name    = string
-      enabled = optional(bool, true)
-      action  = string
-      filters = list(string)
-      traffic = list(string)
-    })), {})
   })
   default = {
     tunnels             = {}
