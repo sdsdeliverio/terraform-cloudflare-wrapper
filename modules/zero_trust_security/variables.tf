@@ -302,9 +302,9 @@ variable "gateway_policies" {
     enabled        = optional(bool, true)
     action         = string
     filters        = list(string)
-    traffic        = list(string)
-    identity       = optional(list(string), [])
-    device_posture = optional(list(string), [])
+    traffic        = optional(string)
+    identity       = optional(string)
+    device_posture = optional(string)
   }))
   default = {}
 }

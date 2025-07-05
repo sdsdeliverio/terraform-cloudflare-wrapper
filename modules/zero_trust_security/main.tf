@@ -104,9 +104,9 @@ resource "cloudflare_zero_trust_gateway_policy" "this" {
   action     = each.value.action
 
   filters        = each.value.filters
-  traffic        = each.value.traffic
-  identity       = try(each.value.identity, [])
-  device_posture = try(each.value.device_posture, [])
+  traffic        = try(each.value.traffic, null)
+  identity       = try(each.value.identity, null)
+  device_posture = try(each.value.device_posture, null)
 }
 
 # # Zero Trust Gateway Settings
