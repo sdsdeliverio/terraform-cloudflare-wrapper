@@ -518,6 +518,13 @@ variable "zero_trust_config" {
         }), null)
       }))
     })))
+    gateway_policies = optional(map(object({
+      name    = string
+      enabled = optional(bool, true)
+      action  = string
+      filters = list(string)
+      traffic = list(string)
+    })), {})
   })
   default = {
     tunnels             = {}
