@@ -169,7 +169,13 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_virtual_network" "this" {
   account_id         = var.account_id
   name               = each.key
   is_default_network = try(each.value.is_default_network, false)
+  is_default         = try(each.value.is_default_network, false)
   comment            = try(each.value.comment, null)
+
+  lifecycle {
+    create_before_destroy = true
+    prevent_destroy       = false
+  }
 }
 
 resource "cloudflare_zero_trust_tunnel_cloudflared_config" "with_cloudflared_config" {
