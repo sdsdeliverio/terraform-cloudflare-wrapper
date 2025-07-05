@@ -298,17 +298,13 @@ variable "access_groups" {
 variable "gateway_policies" {
   description = "List of Zero Trust Gateway policies"
   type = map(object({
-    name    = string
-    enabled = optional(bool, true)
-    rules = list(object({
-      name           = string
-      action         = string
-      enabled        = optional(bool, true)
-      filters        = list(string)
-      traffic        = list(string)
-      identity       = optional(list(string), [])
-      device_posture = optional(list(string), [])
-    }))
+    name           = string
+    enabled        = optional(bool, true)
+    action         = string
+    filters        = list(string)
+    traffic        = list(string)
+    identity       = optional(list(string), [])
+    device_posture = optional(list(string), [])
   }))
   default = {}
 }

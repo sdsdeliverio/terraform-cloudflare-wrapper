@@ -95,26 +95,19 @@ resource "cloudflare_zero_trust_access_application" "this" {
 # }
 
 # Zero Trust Gateway Policy
-# resource "cloudflare_zero_trust_gateway_policy" "policy" {
-#   for_each = { for policy in var.gateway_policies : policy.name => policy }
+resource "cloudflare_zero_trust_gateway_policy" "this" {
+  for_each = { for policy in var.gateway_policies : policy.name => policy }
 
-#   account_id = var.account_id
-#   name       = each.key
-#   enabled    = try(each.value.enabled, true)
+  account_id = var.account_id
+  name       = each.key
+  enabled    = try(each.value.enabled, true)
+  action     = each.value.action
 
-#   dynamic "rule" {
-#     for_each = each.value.rules
-#     content {
-#       name           = rule.value.name
-#       action         = rule.value.action
-#       enabled        = try(rule.value.enabled, true)
-#       filters        = rule.value.filters
-#       traffic        = rule.value.traffic
-#       identity       = try(rule.value.identity, [])
-#       device_posture = try(rule.value.device_posture, [])
-#     }
-#   }
-# }
+  filters        = each.value.filters
+  traffic        = each.value.traffic
+  identity       = try(each.value.identity, [])
+  device_posture = try(each.value.device_posture, [])
+}
 
 # # Zero Trust Gateway Settings
 # resource "cloudflare_zero_trust_gateway_settings" "settings" {

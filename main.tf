@@ -112,6 +112,7 @@ module "zero_trust_security" {
   virtual_networks    = try(var.zero_trust_config.virtual_networks, {})
   gateway_policies    = try(var.zero_trust_config.gateway_policies, {})
   firewall_ruleset    = try(var.zero_trust_config.firewall_ruleset, {})
+  gateway_policies =    try(var.zero_trust_config.gateway_policies, {})
 }
 
 # # Pages Delivery Module
