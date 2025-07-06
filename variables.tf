@@ -210,6 +210,14 @@ variable "zero_trust_config" {
         }), { enabled = true })
       }))
     })), {})
+    lists = optional(map(object({
+      name        = string
+      description = optional(string, "Managed by Terraform")
+      items       = list(object({
+        value = string
+        comment = optional(string, "")
+      }))
+    })), {})
     virtual_networks = optional(map(object({
       is_default_network = optional(bool, false)
       is_default         = optional(bool, false)

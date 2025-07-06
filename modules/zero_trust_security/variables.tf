@@ -396,6 +396,20 @@ variable "virtual_networks" {
   default = {}
 }
 
+variable "lists" {
+  description = "Zero Trust lists to create (e.g. IP, SERIAL, DOMAIN, URL, EMAIL)"
+  type = list(object({
+    name        = string                 # List name :contentReference[oaicite:1]{index=1}
+    type        = string                 # One of IP, SERIAL, URL, DOMAIN, EMAIL :contentReference[oaicite:2]{index=2}
+    description = optional(string)       # Optional list-level description :contentReference[oaicite:3]{index=3}
+    items = list(object({
+      value       = string               # Entry value (IP, serial, domain, etc.) :contentReference[oaicite:4]{index=4}
+      description = optional(string)     # Optional per-item description :contentReference[oaicite:5]{index=5}
+    }))
+  }))
+  default = []
+}
+
 variable "cloudflare_secrets" {
   description = "Provide a sensitive Map of secrets to be used in Cloudflare"
   type = object({

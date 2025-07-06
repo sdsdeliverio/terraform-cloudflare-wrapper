@@ -176,6 +176,23 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_virtual_network" "this" {
   }
 }
 
+resource "cloudflare_zero_trust_list" "this" {
+  for_each = { for lst in var.lists : lst.name => lst }
+
+  account_id  = each.value.account_id
+  name        = each.value.name
+  type        = each.value.type
+  description = lookup(each.value, "description", null)
+
+  # items must be a list of objects with "value" + optional "description"
+  items = [
+    for itm in each.value.items : {
+      value       = itm.value
+      description = lookup(itm, "description", null)
+    }
+  ]
+}
+
 resource "cloudflare_zero_trust_tunnel_cloudflared_config" "with_cloudflared_config" {
   for_each = {
     for tunnel_key, tunnel in var.tunnels : tunnel_key => tunnel
