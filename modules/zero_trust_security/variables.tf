@@ -398,7 +398,7 @@ variable "virtual_networks" {
 
 variable "lists" {
   description = "Zero Trust lists to create (e.g. IP, SERIAL, DOMAIN, URL, EMAIL)"
-  type = list(object({
+  type = map(object({
     name        = string                 # List name :contentReference[oaicite:1]{index=1}
     type        = string                 # One of IP, SERIAL, URL, DOMAIN, EMAIL :contentReference[oaicite:2]{index=2}
     description = optional(string)       # Optional list-level description :contentReference[oaicite:3]{index=3}

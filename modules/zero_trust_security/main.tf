@@ -177,9 +177,9 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_virtual_network" "this" {
 }
 
 resource "cloudflare_zero_trust_list" "this" {
-  for_each = { for lst in var.lists : lst.name => lst }
+  for_each =  var.lists
 
-  account_id  = each.value.account_id
+  account_id  = var.account_id
   name        = each.value.name
   type        = each.value.type
   description = lookup(each.value, "description", null)
