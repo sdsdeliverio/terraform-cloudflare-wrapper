@@ -407,7 +407,7 @@ variable "lists" {
       description = optional(string)     # Optional per-item description :contentReference[oaicite:5]{index=5}
     }))
   }))
-  default = []
+  default = {}
 }
 
 variable "cloudflare_secrets" {
