@@ -212,9 +212,10 @@ variable "zero_trust_config" {
     })), {})
     lists = optional(map(object({
       name        = string
+      type        = string
       description = optional(string, "Managed by Terraform")
-      items       = list(object({
-        value = string
+      items = list(object({
+        value   = string
         comment = optional(string, "")
       }))
     })), {})
