@@ -58,7 +58,7 @@ resource "cloudflare_zero_trust_access_application" "this" {
   policies = [
     for policy_key in each.value.policies : {
       id         = cloudflare_zero_trust_access_policy.this[policy_key].id
-      precedence = index(each.value.policies, policy_key)
+      precedence = try(index(each.value.policies, policy_key)+1, 1)
     }
   ]
   read_service_tokens_from_header = each.value.read_service_tokens_from_header
@@ -67,7 +67,7 @@ resource "cloudflare_zero_trust_access_application" "this" {
   session_duration                = each.value.session_duration
   skip_interstitial               = each.value.skip_interstitial
   tags                            = each.value.tags
-  skip_app_launcher_login_page    = true
+  skip_app_launcher_login_page    = each.value.type == "app_launcher" ? true : false
 
   lifecycle {
     create_before_destroy = true
