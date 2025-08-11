@@ -67,7 +67,7 @@ resource "cloudflare_zero_trust_access_application" "this" {
   session_duration                = each.value.session_duration
   skip_interstitial               = each.value.skip_interstitial
   tags                            = each.value.tags
-  skip_app_launcher_login_page    = each.value.type == "app_launcher" ? true : false
+  # skip_app_launcher_login_page    = each.value.skip_app_launcher_login_page
 
   lifecycle {
     create_before_destroy = true
