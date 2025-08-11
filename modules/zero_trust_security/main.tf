@@ -2,7 +2,7 @@ terraform {
   required_providers {
     cloudflare = {
       source  = "cloudflare/cloudflare"
-      version = "5.6.0"
+      version = "5.7.1"
     }
   }
 }
@@ -72,7 +72,6 @@ resource "cloudflare_zero_trust_access_application" "this" {
   lifecycle {
     create_before_destroy = true
     prevent_destroy       = false
-
   }
 }
 
@@ -172,12 +171,12 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_virtual_network" "this" {
   comment            = try(each.value.comment, null)
 
   lifecycle {
-    prevent_destroy       = false
+    prevent_destroy = false
   }
 }
 
 resource "cloudflare_zero_trust_list" "this" {
-  for_each =  var.lists
+  for_each = var.lists
 
   account_id  = var.account_id
   name        = each.value.name
