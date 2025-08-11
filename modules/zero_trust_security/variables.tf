@@ -378,9 +378,6 @@ variable "tunnels" {
         tcp_keep_alive           = optional(number)
         tls_timeout              = optional(number)
       }))
-      warp_routing = optional(object({
-        enabled = bool
-      }), { enabled = true })
     }), null)
   }))
   default = {}

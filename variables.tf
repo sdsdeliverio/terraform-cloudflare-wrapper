@@ -205,9 +205,6 @@ variable "zero_trust_config" {
           tcp_keep_alive           = optional(number)
           tls_timeout              = optional(number)
         }), null)
-        warp_routing = optional(object({
-          enabled = bool
-        }), { enabled = true })
       }))
     })), {})
     lists = optional(map(object({

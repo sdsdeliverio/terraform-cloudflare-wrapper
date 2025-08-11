@@ -263,7 +263,6 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "with_cloudflared_con
       tcp_keep_alive           = each.value.cloudflared_config.tcp_keep_alive
       tls_timeout              = each.value.cloudflared_config.tls_timeout
     } : null
-    warp_routing = try(each.value.cloudflared_config.warp_routing, { enabled = true })
   }
 
   depends_on = [
