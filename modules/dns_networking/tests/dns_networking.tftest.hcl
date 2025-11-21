@@ -63,11 +63,11 @@ run "multiple_dns_records" {
             proxied = true
           },
           {
-            name    = "mail"
-            type    = "MX"
-            content = "mail.example.com"
-            ttl     = 3600
-            proxied = false
+            name     = "mail"
+            type     = "MX"
+            content  = "mail.example.com"
+            ttl      = 3600
+            proxied  = false
             priority = 10
           }
         ]

@@ -75,12 +75,12 @@ run "access_policy_creation" {
   command = plan
 
   variables {
-    environment        = "test"
-    account_id         = "test-account-id"
-    zones              = {}
-    cloudflare_secrets = {}
-    tunnels            = {}
-    virtual_networks   = {}
+    environment         = "test"
+    account_id          = "test-account-id"
+    zones               = {}
+    cloudflare_secrets  = {}
+    tunnels             = {}
+    virtual_networks    = {}
     access_applications = {}
     access_policies = {
       "test-policy" = {
@@ -109,12 +109,12 @@ run "zero_trust_list_creation" {
   command = plan
 
   variables {
-    environment        = "test"
-    account_id         = "test-account-id"
-    zones              = {}
-    cloudflare_secrets = {}
-    tunnels            = {}
-    virtual_networks   = {}
+    environment         = "test"
+    account_id          = "test-account-id"
+    zones               = {}
+    cloudflare_secrets  = {}
+    tunnels             = {}
+    virtual_networks    = {}
     access_applications = {}
     access_policies     = {}
     gateway_policies    = {}
