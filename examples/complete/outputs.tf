@@ -5,7 +5,7 @@ output "dns_zones" {
 
 output "dns_records" {
   description = "Created DNS records"
-  value       = module.cloudflare.dns_networking.records
+  value       = module.cloudflare.dns_networking.dns_records
   sensitive   = false
 }
 
