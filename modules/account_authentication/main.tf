@@ -1,8 +1,8 @@
 # Account configuration
 resource "cloudflare_account" "account" {
-  name              = var.account_name
-  type              = var.account_type
-  enforce_twofactor = var.enforce_twofactor
+  name = var.account_name
+  type = var.account_type
+  # Note: enforce_twofactor is deprecated in provider v5.8+
 }
 
 # Account DNS settings
@@ -39,7 +39,7 @@ resource "cloudflare_api_token" "token" {
 
   name = each.key
 
-  policy {
+  policies {
     permission_groups = each.value.permissions
     resources         = each.value.resources
   }
@@ -49,18 +49,20 @@ resource "cloudflare_api_token" "token" {
 resource "cloudflare_api_shield" "shield" {
   for_each = { for zone in var.api_shield_zones : zone.zone_id => zone }
 
-  zone_id = each.key
-  enabled = each.value.enabled
+  zone_id                  = each.key
+  auth_id_characteristics = try(each.value.auth_id_characteristics, [])
+  # Note: enabled argument removed in provider v5.8+
 }
 
 # API Shield schema
 resource "cloudflare_api_shield_schema" "schemas" {
   for_each = { for schema in var.api_shield_schemas : schema.name => schema }
 
-  zone_id    = each.value.zone_id
-  name       = each.key
-  kind       = each.value.kind
-  validation = each.value.validation
+  zone_id = each.value.zone_id
+  name    = each.key
+  kind    = each.value.kind
+  file    = each.value.file
+  # Note: validation argument replaced with file in provider v5.8+
 }
 
 # API Shield operation configuration

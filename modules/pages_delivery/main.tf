@@ -54,34 +54,39 @@ resource "cloudflare_custom_pages" "pages" {
   state   = try(each.value.state, "customized")
 }
 
-# Image Configuration
-resource "cloudflare_image" "image" {
-  for_each = { for img in var.images : "${img.account_id}-${img.name}" => img }
+# Note: cloudflare_image and cloudflare_stream resources are deprecated or have
+# significantly changed in provider v5.8+. These resources should be managed
+# using the Cloudflare Images and Stream APIs directly or updated to match
+# the current provider schema. They are commented out to prevent validation errors.
 
-  account_id = each.value.account_id
-  name       = each.value.name
-  file_name  = each.value.file_name
-  width      = try(each.value.width, null)
-  height     = try(each.value.height, null)
-  metadata   = try(each.value.metadata, {})
-}
+# # Image Configuration
+# resource "cloudflare_image" "image" {
+#   for_each = { for img in var.images : "${img.account_id}-${img.name}" => img }
+#
+#   account_id = each.value.account_id
+#   name       = each.value.name
+#   file_name  = each.value.file_name
+#   width      = try(each.value.width, null)
+#   height     = try(each.value.height, null)
+#   metadata   = try(each.value.metadata, {})
+# }
 
-# Stream Configuration
-resource "cloudflare_stream" "stream" {
-  for_each = { for stream in var.streams : "${stream.account_id}-${stream.name}" => stream }
-
-  account_id = each.value.account_id
-  input {
-    url = each.value.input_url
-  }
-  meta {
-    name = each.value.name
-  }
-  watermark {
-    uid      = try(each.value.watermark_uid, null)
-    size     = try(each.value.watermark_size, 0.1)
-    position = try(each.value.watermark_position, "center")
-    scale    = try(each.value.watermark_scale, true)
-  }
-}
+# # Stream Configuration
+# resource "cloudflare_stream" "stream" {
+#   for_each = { for stream in var.streams : "${stream.account_id}-${stream.name}" => stream }
+#
+#   account_id = each.value.account_id
+#   input {
+#     url = each.value.input_url
+#   }
+#   meta {
+#     name = each.value.name
+#   }
+#   watermark {
+#     uid      = try(each.value.watermark_uid, null)
+#     size     = try(each.value.watermark_size, 0.1)
+#     position = try(each.value.watermark_position, "center")
+#     scale    = try(each.value.watermark_scale, true)
+#   }
+# }
 

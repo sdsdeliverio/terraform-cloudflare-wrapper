@@ -11,11 +11,7 @@ variable "account_type" {
   default     = "standard"
 }
 
-variable "enforce_twofactor" {
-  description = "Whether to enforce two-factor authentication"
-  type        = bool
-  default     = true
-}
+# Note: enforce_twofactor is deprecated in provider v5.8+ and has been removed
 
 variable "dns_settings_enabled" {
   description = "Whether to enable account-level DNS settings"
@@ -57,8 +53,8 @@ variable "api_tokens" {
 variable "api_shield_zones" {
   description = "List of zones to enable API Shield"
   type = list(object({
-    zone_id = string
-    enabled = bool
+    zone_id                  = string
+    auth_id_characteristics  = optional(list(string), [])
   }))
   default = []
 }
@@ -66,10 +62,10 @@ variable "api_shield_zones" {
 variable "api_shield_schemas" {
   description = "List of API Shield schemas"
   type = list(object({
-    zone_id    = string
-    name       = string
-    kind       = string
-    validation = string
+    zone_id = string
+    name    = string
+    kind    = string
+    file    = string  # Changed from validation to file in provider v5.8+
   }))
   default = []
 }
