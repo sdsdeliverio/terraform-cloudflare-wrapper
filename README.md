@@ -1,5 +1,8 @@
 # Terraform Cloudflare Wrapper Module
 
+[![Terraform PR Checks](https://github.com/sdsdeliverio/terraform-cloudflare-wrapper/actions/workflows/terraform-pr-checks.yml/badge.svg)](https://github.com/sdsdeliverio/terraform-cloudflare-wrapper/actions/workflows/terraform-pr-checks.yml)
+[![Terraform Tests](https://github.com/sdsdeliverio/terraform-cloudflare-wrapper/actions/workflows/terraform-tests.yml/badge.svg)](https://github.com/sdsdeliverio/terraform-cloudflare-wrapper/actions/workflows/terraform-tests.yml)
+
 A comprehensive Terraform module for managing Cloudflare resources with a modular, clean architecture.
 
 ## Architecture
@@ -170,7 +173,7 @@ See [modules/zero_trust_security/README.md](modules/zero_trust_security/README.m
 
 ## Testing
 
-Each module includes Terraform tests. Run them with:
+Each module includes Terraform tests. Run them locally with:
 
 ```bash
 # Test all modules
@@ -179,6 +182,15 @@ terraform test
 # Test specific module
 terraform test -test-directory=modules/dns_networking/tests
 ```
+
+### Continuous Integration
+
+All pull requests automatically run:
+- **Format checks**: Ensures code is properly formatted
+- **Validation**: Validates all modules and examples
+- **Tests**: Runs all module tests in parallel
+
+See [.github/workflows/README.md](.github/workflows/README.md) for details on CI/CD pipelines.
 
 ## Development
 
