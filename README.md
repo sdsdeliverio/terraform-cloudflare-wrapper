@@ -1,197 +1,248 @@
-# Terraform Cloudflare Module
+# Terraform Cloudflare Wrapper Module
 
-This Terraform module provides a comprehensive solution for managing Cloudflare resources. It's organized into submodules that can be enabled or disabled as needed.
+A comprehensive Terraform module for managing Cloudflare resources with a modular, clean architecture.
 
-## Features
+## Architecture
 
-- Account Authentication & Management
-- DNS & Networking Configuration
-- Security & Bot Management
-- SSL/TLS Certificate Management
-- Workers & KV Storage
-- Zero Trust Security
-- Pages & Content Delivery
-- R2 Storage Management
+This module follows Terraform best practices:
 
-## Usage
+- **Provider configuration at root**: No provider blocks in child modules
+- **Modular design**: Each feature area (DNS, Email, Zero Trust) is a separate module
+- **Flexible enablement**: Enable/disable modules as needed
+- **Type-safe variables**: All variables have proper types and validation
+- **Comprehensive testing**: Terraform tests for all major modules
+- **Clear outputs**: Only expose necessary information
 
-```hcl
-module "cloudflare" {
-  source  = "sdsdeliverio/wrapper/cloudflare"
-  version = "1.0.0"
+## Available Modules
 
-  cloudflare_api_token = var.cloudflare_api_token
-  account_id          = var.account_id
-  environment         = "production"
+### Active Modules
 
-  # Enable/disable specific modules
-  enabled_modules = {
-    account_authentication  = true
-    dns_networking         = true
-    security_bot_management = false
-    ssl_tls_certificates   = true
-    workers               = false
-    zero_trust_security   = true
-    pages_delivery       = false
-    r2_storage          = true
-  }
+- **dns_networking**: DNS zone and record management
+- **email_management**: Email routing and forwarding rules
+- **zero_trust_security**: Zero Trust tunnels, access policies, and gateway rules
 
-  # Module-specific configurations
-  account_auth_config = {
-    name = "My Cloudflare Account"
-    type = "standard"
-    api_tokens = [
-      {
-        name = "terraform-token"
-        permissions = ["DNS Write", "Zone Write"]
-      }
-    ]
-  }
+### Additional Modules (Scaffolded)
 
-  dns_networking_config = {
-    zones = [
-      {
-        name = "example.com"
-        plan = "free"
-      }
-    ]
-    records = [
-      {
-        zone_name = "example.com"
-        name      = "www"
-        type      = "A"
-        value     = "192.0.2.1"
-        proxied   = true
-      }
-    ]
-  }
-}
-```
+- **account_authentication**: Account settings and API tokens
+- **security_bot_management**: Bot management and firewall rules
+- **ssl_tls_certificates**: SSL/TLS certificate management
+- **workers**: Cloudflare Workers and KV storage
+- **pages_delivery**: Cloudflare Pages projects
+- **r2_storage**: R2 bucket management
 
-## Requirements
+## Quick Start
+
+### Prerequisites
 
 - Terraform >= 1.0.0
-- Cloudflare Provider >= 5.4.0
+- Cloudflare account with API token
+- Zone IDs for any zones you want to manage
 
-## Modules
+### Basic Usage
 
-### Account Authentication (`account_authentication`)
-Manages Cloudflare account settings, API tokens, and member access.
-
-### DNS Networking (`dns_networking`)
-Handles DNS zones, records, and network configurations.
-
-### Security Bot Management (`security_bot_management`)
-Manages firewall rules, bot protection, and security settings.
-
-### SSL/TLS Certificates (`ssl_tls_certificates`)
-Handles SSL/TLS certificates and custom hostname configurations.
-
-### Workers (`workers`)
-Manages Cloudflare Workers, KV storage, and routing.
-
-### Zero Trust Security (`zero_trust_security`)
-Configures Zero Trust access policies, applications, and tunnels.
-
-### Pages Delivery (`pages_delivery`)
-Manages Cloudflare Pages projects and custom domains.
-
-### R2 Storage (`r2_storage`)
-Handles R2 bucket creation and configuration.
-
-## Inputs
-
-| Name | Description | Type | Required | Default |
-|------|-------------|------|----------|---------|
-| cloudflare_api_token | API token for authentication | string | yes | - |
-| account_id | Cloudflare account ID | string | yes | - |
-| environment | Environment name | string | no | "production" |
-| enabled_modules | Map of modules to enable/disable | map(bool) | no | All true |
-| tags | Resource tags | map(string) | no | {} |
-
-## Outputs
-
-| Name | Description |
-|------|-------------|
-| account_auth | Account authentication outputs |
-| dns_networking | DNS and networking outputs |
-| security_bot | Security and bot management outputs |
-| ssl_tls | SSL/TLS certificate outputs |
-| workers | Workers configuration outputs |
-| zero_trust | Zero Trust security outputs |
-| pages_delivery | Pages delivery outputs |
-| r2_storage | R2 storage outputs |
-
-## Example Configurations
-
-### Basic DNS Management
 ```hcl
 module "cloudflare" {
-  source  = "sdsdeliverio/wrapper/cloudflare"
-  version = "1.0.0"
+  source = "path/to/module"
 
   cloudflare_api_token = var.cloudflare_api_token
-  account_id          = var.account_id
+  account_id           = var.account_id
+  environment          = "production"
 
-  enabled_modules = {
-    dns_networking = true
+  # Define zones to manage
+  zones = {
+    "example.com" = {
+      id   = "your-zone-id-here"
+      name = "example.com"
+    }
   }
 
+  # Enable specific modules
+  enabled_modules = {
+    dns_networking      = true
+    email_management    = true
+    zero_trust_security = true
+    # ... others disabled by default
+  }
+
+  # DNS configuration
   dns_networking_config = {
-    zones = [{
-      name = "example.com"
-      plan = "free"
-    }]
-    records = [{
-      zone_name = "example.com"
-      name      = "www"
-      type      = "A"
-      value     = "192.0.2.1"
-      proxied   = true
-    }]
+    records = [
+      {
+        zone_key = "example.com"
+        records = [
+          {
+            name    = "www"
+            type    = "A"
+            content = "192.0.2.1"
+            ttl     = 3600
+            proxied = true
+          }
+        ]
+      }
+    ]
   }
 }
 ```
 
-### Zero Trust Security Setup
+## Module Configuration
+
+### DNS Networking
+
+Manages DNS records across multiple zones:
+
 ```hcl
-module "cloudflare" {
-  source  = "sdsdeliverio/wrapper/cloudflare"
-  version = "1.0.0"
+dns_networking_config = {
+  records = [
+    {
+      zone_key = "example.com"
+      records = [
+        {
+          name    = "www"
+          type    = "A"
+          content = "192.0.2.1"
+          ttl     = 3600
+          proxied = true
+          comment = "Web server"
+        }
+      ]
+    }
+  ]
+}
+```
 
-  cloudflare_api_token = var.cloudflare_api_token
-  account_id          = var.account_id
+See [modules/dns_networking/README.md](modules/dns_networking/README.md) for details.
 
-  enabled_modules = {
-    zero_trust_security = true
-  }
+### Email Management
 
-  zero_trust_config = {
-    applications = [{
-      name   = "internal-app"
-      domain = "app.example.com"
-      type   = "self_hosted"
-    }]
-    policies = [{
-      name = "allow-internal"
-      application_id = "app_id"
-      decision      = "allow"
-      include = {
-        group = ["internal-users"]
-      }
-    }]
+Configures email routing rules:
+
+```hcl
+email_management_config = {
+  aliasroute2email = [
+    {
+      alias          = "info"
+      action         = "forward"
+      email_to_route = "admin@example.com"
+      zone_key       = "example.com"
+    }
+  ]
+  catch_all_rule = {
+    zone_key       = "example.com"
+    catchall_email = "catchall@example.com"
   }
 }
+```
+
+See [modules/email_management/README.md](modules/email_management/README.md) for details.
+
+### Zero Trust Security
+
+Manages tunnels, access policies, and gateway rules:
+
+```hcl
+zero_trust_config = {
+  tunnels = {
+    "my-tunnel" = {
+      name       = "my-tunnel"
+      config_src = "cloudflare"
+      routes     = []
+    }
+  }
+  access_policies = {
+    "allow-team" = {
+      name     = "Allow Team"
+      decision = "allow"
+      include  = [{ everyone = {} }]
+    }
+  }
+}
+
+cloudflare_secrets = {
+  tunnel_secrets = {
+    "my-tunnel" = {
+      secret = var.tunnel_secret  # Store securely!
+    }
+  }
+}
+```
+
+See [modules/zero_trust_security/README.md](modules/zero_trust_security/README.md) for details.
+
+## Testing
+
+Each module includes Terraform tests. Run them with:
+
+```bash
+# Test all modules
+terraform test
+
+# Test specific module
+terraform test -test-directory=modules/dns_networking/tests
 ```
 
 ## Development
 
-To contribute to this module:
+### Project Structure
+
+```
+.
+├── main.tf                    # Root module configuration
+├── variables.tf               # Root input variables
+├── outputs.tf                 # Root outputs
+├── provider.tf                # Provider configuration
+├── modules/
+│   ├── dns_networking/        # DNS module
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   ├── outputs.tf
+│   │   ├── versions.tf
+│   │   ├── README.md
+│   │   └── tests/
+│   ├── email_management/      # Email module
+│   │   └── ...
+│   └── zero_trust_security/   # Zero Trust module
+│       └── ...
+```
+
+### Contributing
 
 1. Fork the repository
 2. Create a feature branch
-3. Submit a pull request
+3. Make your changes following the patterns established
+4. Add/update tests
+5. Update documentation
+6. Submit a pull request
+
+## Requirements
+
+| Name | Version |
+|------|---------|
+| terraform | >= 1.0.0 |
+| cloudflare | ~> 5.8 |
+
+## Inputs
+
+See [variables.tf](variables.tf) for a complete list of input variables.
+
+Key variables:
+- `cloudflare_api_token` (required, sensitive): API token for Cloudflare
+- `account_id` (required): Cloudflare account ID
+- `zones` (required): Map of zones to manage
+- `environment` (optional): Environment tag (default: "production")
+- `enabled_modules` (optional): Map of modules to enable/disable
+
+## Outputs
+
+See [outputs.tf](outputs.tf) for available outputs from each module.
 
 ## License
 
-This module is licensed under the MIT License. See the LICENSE file for details.
+This module is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Support
+
+For issues and questions:
+- Check module-specific READMEs
+- Review the [CHANGELOG](CHANGELOG.md)
+- Open a GitHub issue
+
