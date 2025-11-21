@@ -1,12 +1,3 @@
-terraform {
-  required_providers {
-    cloudflare = {
-      source  = "cloudflare/cloudflare"
-      version = "5.8.2"
-    }
-  }
-}
-
 # Certificate Pack
 resource "cloudflare_certificate_pack" "cert_pack" {
   for_each = { for pack in var.certificate_packs : "${pack.zone_id}-${pack.type}" => pack }

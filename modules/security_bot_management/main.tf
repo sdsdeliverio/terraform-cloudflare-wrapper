@@ -1,12 +1,3 @@
-terraform {
-  required_providers {
-    cloudflare = {
-      source  = "cloudflare/cloudflare"
-      version = "5.8.2"
-    }
-  }
-}
-
 # Bot Management
 resource "cloudflare_bot_management" "bot" {
   for_each = { for zone in var.bot_management_zones : zone.zone_id => zone }

@@ -1,12 +1,3 @@
-terraform {
-  required_providers {
-    cloudflare = {
-      source  = "cloudflare/cloudflare"
-      version = "5.8.2"
-    }
-  }
-}
-
 # Workers Script
 resource "cloudflare_workers_script" "script" {
   for_each = { for script in var.workers_scripts : script.name => script }

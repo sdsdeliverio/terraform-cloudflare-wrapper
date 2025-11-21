@@ -1,12 +1,3 @@
-terraform {
-  required_providers {
-    cloudflare = {
-      source  = "cloudflare/cloudflare"
-      version = "5.8.2"
-    }
-  }
-}
-
 # Pages Project
 resource "cloudflare_pages_project" "project" {
   for_each = { for project in var.pages_projects : project.name => project }

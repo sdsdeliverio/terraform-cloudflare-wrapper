@@ -1,13 +1,3 @@
-terraform {
-  required_providers {
-    cloudflare = {
-      source  = "cloudflare/cloudflare"
-      version = "5.8.2"
-    }
-  }
-}
-
-
 # Access Policy
 resource "cloudflare_zero_trust_access_policy" "this" {
   for_each = var.access_policies

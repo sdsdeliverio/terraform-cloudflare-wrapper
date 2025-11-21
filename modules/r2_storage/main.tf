@@ -1,12 +1,3 @@
-terraform {
-  required_providers {
-    cloudflare = {
-      source  = "cloudflare/cloudflare"
-      version = "5.8.2"
-    }
-  }
-}
-
 # R2 Bucket
 resource "cloudflare_r2_bucket" "bucket" {
   for_each = { for bucket in var.r2_buckets : bucket.name => bucket }
