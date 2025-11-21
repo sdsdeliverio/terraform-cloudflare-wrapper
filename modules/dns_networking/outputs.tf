@@ -19,27 +19,3 @@ output "zone_ids" {
   value       = { for k, v in var.zones : k => v.id }
 }
 
-output "routing_addresses" {
-  description = "Map of email routing addresses"
-  value = { for k, v in cloudflare_email_routing_address.this : k => {
-    id    = v.id
-    email = v.email
-  } }
-}
-
-output "routing_rules" {
-  description = "Map of email routing rules"
-  value = merge(
-    { for k, v in cloudflare_email_routing_rule.forwarding : k => {
-      id      = v.id
-      name    = v.name
-      enabled = v.enabled
-    } },
-    { for k, v in cloudflare_email_routing_rule.drop : k => {
-      id      = v.id
-      name    = v.name
-      enabled = v.enabled
-    } }
-  )
-}
-

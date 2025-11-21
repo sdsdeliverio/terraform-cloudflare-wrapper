@@ -125,8 +125,8 @@ run "zero_trust_list_creation" {
         description = "Test IP list"
         items = [
           {
-            value   = "192.0.2.1"
-            comment = "Test IP"
+            value       = "192.0.2.1"
+            description = "Test IP"
           }
         ]
       }
