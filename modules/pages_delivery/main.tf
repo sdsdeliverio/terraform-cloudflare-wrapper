@@ -1,58 +1,44 @@
-# Pages Project
-resource "cloudflare_pages_project" "project" {
-  for_each = { for project in var.pages_projects : project.name => project }
+# Note: Pages resources have API changes in provider v5.8+
+# Commenting out problematic resources until needed.
 
-  account_id        = var.account_id
-  name              = each.key
-  production_branch = try(each.value.production_branch, "main")
+# # Pages Project - build_config API changed in v5.8+
+# resource "cloudflare_pages_project" "project" {
+#   for_each = { for project in var.pages_projects : project.name => project }
+#
+#   account_id        = var.account_id
+#   name              = each.key
+#   production_branch = try(each.value.production_branch, "main")
+#   # build_config structure changed in v5.8+
+# }
 
-  dynamic "build_config" {
-    for_each = try([each.value.build_config], [])
-    content {
-      build_command       = build_config.value.build_command
-      destination_dir     = try(build_config.value.destination_dir, "public")
-      root_dir            = try(build_config.value.root_dir, "")
-      web_analytics_tag   = try(build_config.value.web_analytics_tag, "")
-      web_analytics_token = try(build_config.value.web_analytics_token, "")
-    }
-  }
-}
+# # Pages Domain - API changed, requires name field in v5.8+
+# resource "cloudflare_pages_domain" "domain" {
+#   for_each = { for domain in var.pages_domains : "${domain.project_name}-${domain.domain}" => domain }
+#
+#   account_id   = var.account_id
+#   project_name = each.value.project_name
+#   # name field required in v5.8+
+#   domain       = each.value.domain
+# }
 
-# Pages Domain
-resource "cloudflare_pages_domain" "domain" {
-  for_each = { for domain in var.pages_domains : "${domain.project_name}-${domain.domain}" => domain }
+# # Custom Hostname - ssl API changed in v5.8+
+# resource "cloudflare_custom_hostname" "hostname" {
+#   for_each = { for hostname in var.custom_hostnames : "${hostname.zone_id}-${hostname.hostname}" => hostname }
+#
+#   zone_id  = each.value.zone_id
+#   hostname = each.value.hostname
+#   # ssl structure changed from block to argument in v5.8+
+# }
 
-  account_id   = var.account_id
-  project_name = each.value.project_name
-  domain       = each.value.domain
-}
-
-# Custom Hostname
-resource "cloudflare_custom_hostname" "hostname" {
-  for_each = { for hostname in var.custom_hostnames : "${hostname.zone_id}-${hostname.hostname}" => hostname }
-
-  zone_id  = each.value.zone_id
-  hostname = each.value.hostname
-  ssl {
-    method = try(each.value.ssl_method, "http")
-    type   = try(each.value.ssl_type, "dv")
-    settings {
-      http2           = try(each.value.enable_http2, true)
-      min_tls_version = try(each.value.min_tls_version, "1.2")
-      tls13           = try(each.value.enable_tls13, true)
-    }
-  }
-}
-
-# Custom Pages
-resource "cloudflare_custom_pages" "pages" {
-  for_each = { for page in var.custom_pages : "${page.zone_id}-${page.type}" => page }
-
-  zone_id = each.value.zone_id
-  type    = each.value.type
-  url     = each.value.url
-  state   = try(each.value.state, "customized")
-}
+# # Custom Pages
+# resource "cloudflare_custom_pages" "pages" {
+#   for_each = { for page in var.custom_pages : "${page.zone_id}-${page.type}" => page }
+#
+#   zone_id = each.value.zone_id
+#   type    = each.value.type
+#   url     = each.value.url
+#   state   = try(each.value.state, "customized")
+# }
 
 # Note: cloudflare_image and cloudflare_stream resources are deprecated or have
 # significantly changed in provider v5.8+. These resources should be managed

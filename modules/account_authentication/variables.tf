@@ -25,6 +25,12 @@ variable "internal_dns_enabled" {
   default     = false
 }
 
+variable "internal_dns_view_name" {
+  description = "Name for the internal DNS view"
+  type        = string
+  default     = "internal_view"
+}
+
 variable "account_members" {
   description = "List of account members to manage"
   type = list(object({
