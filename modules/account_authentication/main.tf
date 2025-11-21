@@ -49,7 +49,7 @@ resource "cloudflare_api_token" "token" {
 resource "cloudflare_api_shield" "shield" {
   for_each = { for zone in var.api_shield_zones : zone.zone_id => zone }
 
-  zone_id                  = each.key
+  zone_id                 = each.key
   auth_id_characteristics = try(each.value.auth_id_characteristics, [])
   # Note: enabled argument removed in provider v5.8+
 }

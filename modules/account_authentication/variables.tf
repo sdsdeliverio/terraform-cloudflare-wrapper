@@ -53,8 +53,8 @@ variable "api_tokens" {
 variable "api_shield_zones" {
   description = "List of zones to enable API Shield"
   type = list(object({
-    zone_id                  = string
-    auth_id_characteristics  = optional(list(string), [])
+    zone_id                 = string
+    auth_id_characteristics = optional(list(string), [])
   }))
   default = []
 }
@@ -65,7 +65,7 @@ variable "api_shield_schemas" {
     zone_id = string
     name    = string
     kind    = string
-    file    = string  # Changed from validation to file in provider v5.8+
+    file    = string # Changed from validation to file in provider v5.8+
   }))
   default = []
 }
