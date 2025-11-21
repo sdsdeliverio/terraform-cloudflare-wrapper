@@ -164,12 +164,12 @@ module "cloudflare" {
         description = "Company office IP addresses"
         items = [
           {
-            value   = "203.0.113.1"
-            comment = "Office HQ"
+            value       = "203.0.113.1"
+            description = "Office HQ"
           },
           {
-            value   = "203.0.113.2"
-            comment = "Office Branch"
+            value       = "203.0.113.2"
+            description = "Office Branch"
           }
         ]
       }
