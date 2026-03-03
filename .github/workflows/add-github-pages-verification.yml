@@ -1,0 +1,61 @@
+name: Add GitHub Pages Verification
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/add-github-pages-verification.yml'
+
+jobs:
+  add-verification-record:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get sdsdeliver.io Zone ID
+        id: get-zone
+        run: |
+          ZONE_ID=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=sdsdeliver.io" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -H "Content-Type: application/json" | jq -r '.result[0].id')
+          echo "zone_id=$ZONE_ID" >> $GITHUB_OUTPUT
+          echo "Zone ID: $ZONE_ID"
+
+      - name: Add GitHub Pages Verification TXT Record
+        run: |
+          RESPONSE=$(curl -s -X POST "https://api.cloudflare.com/client/v4/zones/${{ steps.get-zone.outputs.zone_id }}/dns_records" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data '{
+              "type": "TXT",
+              "name": "_github-pages-challenge-sdsdeliverio",
+              "content": "45c9ba69ca58e2c8a8ea5ec40c97ea",
+              "ttl": 1,
+              "proxied": false,
+              "comment": "GitHub Pages verification record"
+            }')
+          
+          echo "$RESPONSE" | jq .
+          
+          SUCCESS=$(echo "$RESPONSE" | jq -r '.success')
+          if [ "$SUCCESS" != "true" ]; then
+            ERROR=$(echo "$RESPONSE" | jq -r '.errors[0].message // "Unknown error"')
+            if [[ "$ERROR" == *"already exists"* ]]; then
+              echo "⚠️  Record already exists - skipping"
+              exit 0
+            fi
+            echo "❌ Failed to add DNS record: $ERROR"
+            exit 1
+          fi
+          
+          echo "✅ GitHub Pages verification record added successfully"
+          echo "Record: _github-pages-challenge-sdsdeliverio.sdsdeliver.io"
+          echo "Type: TXT"
+          echo "Value: 45c9ba69ca58e2c8a8ea5ec40c97ea"
+
+      - name: Verify Record
+        run: |
+          echo "Waiting for DNS propagation..."
+          sleep 10
+          echo "Verifying DNS record..."
+          dig +short _github-pages-challenge-sdsdeliverio.sdsdeliver.io TXT
