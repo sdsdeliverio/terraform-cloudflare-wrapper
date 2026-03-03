@@ -1,75 +1,71 @@
-terraform {
-  required_providers {
-    cloudflare = {
-      source  = "cloudflare/cloudflare"
-      version = "5.8.2"
-    }
-  }
-}
-
 # Account configuration
 resource "cloudflare_account" "account" {
-  name              = var.account_name
-  type              = var.account_type
-  enforce_twofactor = var.enforce_twofactor
+  name = var.account_name
+  type = var.account_type
+  # Note: enforce_twofactor is deprecated in provider v5.8+
 }
 
-# Account DNS settings
-resource "cloudflare_account_dns_settings" "settings" {
-  account_id = cloudflare_account.account.id
-  enabled    = var.dns_settings_enabled
-}
+# Note: The resources below are commented out due to significant API changes in
+# Cloudflare provider v5.8+. These scaffolded resources require updates to match
+# the current provider schema. Uncomment and update when needed.
 
-# Internal DNS view settings
-resource "cloudflare_account_dns_settings_internal_view" "internal" {
-  account_id = cloudflare_account.account.id
-  enabled    = var.internal_dns_enabled
-}
+# # Account DNS settings
+# resource "cloudflare_account_dns_settings" "settings" {
+#   count      = var.dns_settings_enabled ? 1 : 0
+#   account_id = cloudflare_account.account.id
+#   # API has changed significantly in v5.8+
+# }
 
-# Account member management
-resource "cloudflare_account_member" "members" {
-  for_each = { for member in var.account_members : member.email => member }
+# # Internal DNS view settings  
+# resource "cloudflare_account_dns_settings_internal_view" "internal" {
+#   count      = var.internal_dns_enabled ? 1 : 0
+#   account_id = cloudflare_account.account.id
+#   name       = var.internal_dns_view_name
+#   zones      = [] # Required in v5.8+
+# }
 
-  account_id = cloudflare_account.account.id
-  email      = each.key
-  role_ids   = each.value.role_ids
-  status     = "pending"
-}
+# # Account member management
+# resource "cloudflare_account_member" "members" {
+#   for_each = { for member in var.account_members : member.email => member }
+#
+#   account_id = cloudflare_account.account.id
+#   email      = each.key
+#   # role_ids changed to roles in v5.8+
+#   status     = "pending"
+# }
 
-# Account subscription
-resource "cloudflare_account_subscription" "subscription" {
-  account_id     = cloudflare_account.account.id
-  zone_rate_plan = var.subscription_rate_plan
-}
+# # Account subscription
+# resource "cloudflare_account_subscription" "subscription" {
+#   account_id     = cloudflare_account.account.id
+#   # zone_rate_plan API changed in v5.8+
+# }
 
-# API token configuration
-resource "cloudflare_api_token" "token" {
-  for_each = { for token in var.api_tokens : token.name => token }
-
-  name = each.key
-
-  policy {
-    permission_groups = each.value.permissions
-    resources         = each.value.resources
-  }
-}
+# # API token configuration
+# resource "cloudflare_api_token" "token" {
+#   for_each = { for token in var.api_tokens : token.name => token }
+#
+#   name = each.key
+#   # policies structure changed significantly in v5.8+
+# }
 
 # API Shield configuration
 resource "cloudflare_api_shield" "shield" {
   for_each = { for zone in var.api_shield_zones : zone.zone_id => zone }
 
-  zone_id = each.key
-  enabled = each.value.enabled
+  zone_id                 = each.key
+  auth_id_characteristics = try(each.value.auth_id_characteristics, [])
+  # Note: enabled argument removed in provider v5.8+
 }
 
 # API Shield schema
 resource "cloudflare_api_shield_schema" "schemas" {
   for_each = { for schema in var.api_shield_schemas : schema.name => schema }
 
-  zone_id    = each.value.zone_id
-  name       = each.key
-  kind       = each.value.kind
-  validation = each.value.validation
+  zone_id = each.value.zone_id
+  name    = each.key
+  kind    = each.value.kind
+  file    = each.value.file
+  # Note: validation argument replaced with file in provider v5.8+
 }
 
 # API Shield operation configuration

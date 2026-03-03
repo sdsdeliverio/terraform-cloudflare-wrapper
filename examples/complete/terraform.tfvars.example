@@ -1,0 +1,21 @@
+# Example terraform.tfvars
+# Copy this file to terraform.tfvars and fill in your actual values
+
+cloudflare_api_token = "your-cloudflare-api-token-here"
+account_id           = "your-account-id-here"
+tunnel_secret        = "your-tunnel-secret-here"
+
+zones = {
+  "example.com" = {
+    id   = "your-zone-id-1"
+    name = "example.com"
+  }
+  "example.org" = {
+    id   = "your-zone-id-2"
+    name = "example.org"
+  }
+}
+
+environment     = "production"
+admin_email     = "admin@example.com"
+catchall_email  = "catchall@example.com"

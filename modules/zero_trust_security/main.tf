@@ -1,13 +1,3 @@
-terraform {
-  required_providers {
-    cloudflare = {
-      source  = "cloudflare/cloudflare"
-      version = "5.8.2"
-    }
-  }
-}
-
-
 # Access Policy
 resource "cloudflare_zero_trust_access_policy" "this" {
   for_each = var.access_policies
@@ -58,7 +48,7 @@ resource "cloudflare_zero_trust_access_application" "this" {
   policies = [
     for policy_key in each.value.policies : {
       id         = cloudflare_zero_trust_access_policy.this[policy_key].id
-      precedence = try(index(each.value.policies, policy_key)+1, 1)
+      precedence = try(index(each.value.policies, policy_key) + 1, 1)
     }
   ]
   read_service_tokens_from_header = each.value.read_service_tokens_from_header

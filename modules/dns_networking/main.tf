@@ -1,12 +1,3 @@
-terraform {
-  required_providers {
-    cloudflare = {
-      source  = "cloudflare/cloudflare"
-      version = "5.8.2"
-    }
-  }
-}
-
 locals {
   # Create a map of zone_key to zone details for easier lookup
   zones_map = { for zone in var.zones : zone.name => zone }

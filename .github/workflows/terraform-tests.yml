@@ -1,0 +1,81 @@
+name: Terraform Continuous Testing
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - '**.tf'
+      - '**.tfvars'
+      - '**.hcl'
+      - '.github/workflows/terraform-tests.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-all-modules:
+    name: Test All Modules
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.10.0"
+
+      - name: Run All Tests
+        id: test_all
+        run: |
+          echo "### Running All Terraform Tests" >> $GITHUB_STEP_SUMMARY
+          
+          # Track failures
+          failed_tests=""
+          
+          # Find all test directories
+          for test_dir in modules/*/tests; do
+            if [ -d "$test_dir" ]; then
+              module_path=$(dirname "$test_dir")
+              module_name=$(basename "$module_path")
+              
+              echo "Testing $module_name..."
+              cd "$module_path"
+              
+              # Initialize module
+              terraform init -backend=false
+              
+              # Run tests
+              if terraform test -test-directory=tests; then
+                echo "✅ $module_name tests passed" >> $GITHUB_STEP_SUMMARY
+              else
+                echo "❌ $module_name tests failed" >> $GITHUB_STEP_SUMMARY
+                failed_tests="$failed_tests $module_name"
+              fi
+              
+              cd - > /dev/null
+            fi
+          done
+          
+          if [ -n "$failed_tests" ]; then
+            echo ""
+            echo "Failed modules:$failed_tests" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          else
+            echo ""
+            echo "🎉 All tests passed!" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-test-results
+          path: |
+            modules/*/tests/*.log
+            modules/*/.terraform.lock.hcl
+          retention-days: 7

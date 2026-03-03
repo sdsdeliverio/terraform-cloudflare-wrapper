@@ -111,23 +111,111 @@ variable "cloudflare_bot_management" {
 # Security Bot Management Module Variables
 variable "security_bot_config" {
   description = "Configuration for the security and bot management module"
-  type        = any
-  default     = {}
+  type = object({
+    bot_management_zones = optional(list(object({
+      zone_id           = string
+      enable_js         = optional(bool, true)
+      fight_mode        = optional(bool, false)
+      optimization_type = optional(string, "balanced")
+    })), [])
+    firewall_rules = optional(list(object({
+      zone_id     = string
+      description = string
+      filter_id   = string
+      action      = string
+      priority    = optional(number)
+      paused      = optional(bool, false)
+    })), [])
+    ua_blocking_rules = optional(list(object({
+      zone_id     = string
+      description = string
+      mode        = string
+      paused      = optional(bool, false)
+      target      = string
+      value       = string
+    })), [])
+  })
+  default = {
+    bot_management_zones = []
+    firewall_rules       = []
+    ua_blocking_rules    = []
+  }
 }
 
 # SSL/TLS Certificates Module Variables
 variable "ssl_tls_config" {
   description = "Configuration for the SSL/TLS certificates module"
-  type        = any
-  default     = {}
+  type = object({
+    certificate_packs = optional(list(object({
+      zone_id           = string
+      type              = string
+      hosts             = list(string)
+      validation_method = optional(string, "txt")
+      validity_days     = optional(number, 90)
+      wait_for_active   = optional(bool, true)
+    })), [])
+    custom_ssl_configs = optional(list(object({
+      zone_id       = string
+      certificate   = string
+      private_key   = string
+      bundle_method = optional(string, "ubiquitous")
+      type          = optional(string, "server")
+      priority      = optional(number, 1)
+    })), [])
+  })
+  default = {
+    certificate_packs  = []
+    custom_ssl_configs = []
+  }
 }
 
 # Workers Module Variables
 variable "workers_config" {
   description = "Configuration for the Workers module"
-  type        = any
-  default     = {}
+  type = object({
+    workers_scripts = optional(list(object({
+      name    = string
+      content = string
+      kv_namespace_bindings = optional(list(object({
+        name         = string
+        namespace_id = string
+      })), [])
+      tags = optional(list(string), [])
+    })), [])
+    kv_namespaces = optional(list(object({
+      title = string
+    })), [])
+    kv_pairs = optional(list(object({
+      namespace_id = string
+      key          = string
+      value        = string
+    })), [])
+    workers_routes = optional(list(object({
+      zone_id     = string
+      pattern     = string
+      script_name = string
+    })), [])
+    custom_domains = optional(list(object({
+      zone_id  = string
+      hostname = string
+      service  = string
+    })), [])
+    cron_triggers = optional(list(object({
+      script_name = string
+      cron        = string
+      schedules   = list(string)
+    })), [])
+  })
+  default = {
+    workers_scripts = []
+    kv_namespaces   = []
+    kv_pairs        = []
+    workers_routes  = []
+    custom_domains  = []
+    cron_triggers   = []
+  }
 }
+
 
 variable "cloudflare_secrets" {
   description = "Provide a sensitive Map of secrets to be used in Cloudflare"
@@ -535,13 +623,74 @@ variable "zero_trust_config" {
 # Pages Delivery Module Variables
 variable "pages_delivery_config" {
   description = "Configuration for the Pages delivery module"
-  type        = any
-  default     = {}
+  type = object({
+    pages_projects = optional(list(object({
+      name              = string
+      production_branch = optional(string, "main")
+      build_config = optional(object({
+        build_command       = string
+        destination_dir     = optional(string, "public")
+        root_dir            = optional(string, "")
+        web_analytics_tag   = optional(string, "")
+        web_analytics_token = optional(string, "")
+      }))
+    })), [])
+    pages_domains = optional(list(object({
+      project_name = string
+      domain       = string
+    })), [])
+    custom_hostnames = optional(list(object({
+      zone_id         = string
+      hostname        = string
+      ssl_method      = optional(string, "http")
+      ssl_type        = optional(string, "dv")
+      enable_http2    = optional(bool, true)
+      min_tls_version = optional(string, "1.2")
+      enable_tls13    = optional(bool, true)
+    })), [])
+  })
+  default = {
+    pages_projects   = []
+    pages_domains    = []
+    custom_hostnames = []
+  }
 }
 
 # R2 Storage Module Variables
 variable "r2_storage_config" {
   description = "Configuration for the R2 storage module"
-  type        = any
-  default     = {}
+  type = object({
+    r2_buckets = optional(list(object({
+      name     = string
+      location = optional(string, "WEUR")
+      cors_rules = optional(list(object({
+        allowed_origins = list(string)
+        allowed_methods = list(string)
+        allowed_headers = optional(list(string), [])
+        exposed_headers = optional(list(string), [])
+        max_age_seconds = optional(number, 600)
+      })))
+      lifecycle_rules = optional(list(object({
+        enabled         = optional(bool, true)
+        expiration_days = number
+        prefix          = optional(string, "")
+        tags            = optional(map(string), {})
+      })))
+    })), [])
+    r2_custom_domains = optional(list(object({
+      custom_domain = string
+      bucket        = string
+    })), [])
+    r2_managed_domains = optional(list(object({
+      zone_id = string
+      domain  = string
+      bucket  = string
+    })), [])
+  })
+  default = {
+    r2_buckets         = []
+    r2_custom_domains  = []
+    r2_managed_domains = []
+  }
 }
+

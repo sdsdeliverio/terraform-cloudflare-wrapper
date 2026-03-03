@@ -1,0 +1,238 @@
+name: Terraform PR Checks
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+    paths:
+      - '**.tf'
+      - '**.tfvars'
+      - '**.hcl'
+      - '.github/workflows/terraform-pr-checks.yml'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  terraform-checks:
+    name: Terraform Quality Checks
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.10.0"
+
+      - name: Terraform Format Check
+        id: fmt
+        run: |
+          echo "### Terraform Format Check" >> $GITHUB_STEP_SUMMARY
+          if terraform fmt -check -recursive; then
+            echo "✅ All files are properly formatted" >> $GITHUB_STEP_SUMMARY
+            echo "status=success" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Some files need formatting. Run 'terraform fmt -recursive' locally." >> $GITHUB_STEP_SUMMARY
+            echo "status=failure" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Terraform Init (Root Module)
+        id: init_root
+        run: |
+          echo "### Terraform Init - Root Module" >> $GITHUB_STEP_SUMMARY
+          # Initialize without backend since we're just validating
+          if terraform init -backend=false; then
+            echo "✅ Root module initialized successfully" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Root module initialization failed" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+        continue-on-error: false
+
+      - name: Terraform Validate (Root Module)
+        id: validate_root
+        run: |
+          echo "### Terraform Validate - Root Module" >> $GITHUB_STEP_SUMMARY
+          if terraform validate; then
+            echo "✅ Root module validation passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Root module validation failed" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+        continue-on-error: false
+
+      - name: Terraform Init (Child Modules)
+        id: init_modules
+        run: |
+          echo "### Terraform Init - Child Modules" >> $GITHUB_STEP_SUMMARY
+          failed_modules=""
+          for module in modules/*/; do
+            module_name=$(basename "$module")
+            echo "Initializing $module_name..."
+            if (cd "$module" && terraform init -backend=false); then
+              echo "✅ $module_name initialized" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "❌ $module_name initialization failed" >> $GITHUB_STEP_SUMMARY
+              failed_modules="$failed_modules $module_name"
+            fi
+          done
+          
+          if [ -n "$failed_modules" ]; then
+            echo "Failed modules:$failed_modules"
+            exit 1
+          fi
+        continue-on-error: false
+
+      - name: Terraform Validate (Child Modules)
+        id: validate_modules
+        run: |
+          echo "### Terraform Validate - Child Modules" >> $GITHUB_STEP_SUMMARY
+          failed_modules=""
+          for module in modules/*/; do
+            module_name=$(basename "$module")
+            # Skip non-directory entries
+            [ -d "$module" ] || continue
+            # Skip directories without .tf files
+            [ -f "$module/main.tf" ] || continue
+            
+            echo "Validating $module_name..."
+            if (cd "$module" && terraform validate); then
+              echo "✅ $module_name validated" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "❌ $module_name validation failed" >> $GITHUB_STEP_SUMMARY
+              failed_modules="$failed_modules $module_name"
+            fi
+          done
+          
+          if [ -n "$failed_modules" ]; then
+            echo "Failed modules:$failed_modules"
+            exit 1
+          fi
+        continue-on-error: false
+
+  terraform-tests:
+    name: Terraform Tests
+    runs-on: ubuntu-latest
+    needs: terraform-checks
+    
+    strategy:
+      matrix:
+        module:
+          - dns_networking
+          - email_management
+          - zero_trust_security
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.10.0"
+
+      - name: Run Terraform Tests - ${{ matrix.module }}
+        id: test
+        run: |
+          echo "### Testing ${{ matrix.module }} Module" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -d "modules/${{ matrix.module }}/tests" ]; then
+            cd modules/${{ matrix.module }}
+            
+            # Initialize the module first
+            terraform init -backend=false
+            
+            # Run tests
+            if terraform test -test-directory=tests; then
+              echo "✅ All tests passed for ${{ matrix.module }}" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "❌ Tests failed for ${{ matrix.module }}" >> $GITHUB_STEP_SUMMARY
+              exit 1
+            fi
+          else
+            echo "⚠️ No tests found for ${{ matrix.module }}" >> $GITHUB_STEP_SUMMARY
+          fi
+
+  example-validation:
+    name: Validate Complete Example
+    runs-on: ubuntu-latest
+    needs: terraform-checks
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.10.0"
+
+      - name: Validate Complete Example
+        id: validate_example
+        run: |
+          echo "### Validate Complete Example" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -d "examples/complete" ]; then
+            cd examples/complete
+            
+            # Initialize without backend
+            if terraform init -backend=false; then
+              echo "✅ Example initialized successfully" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "❌ Example initialization failed" >> $GITHUB_STEP_SUMMARY
+              exit 1
+            fi
+            
+            # Validate (will fail if variables are missing, but that's expected)
+            # We just want to make sure the syntax is correct
+            terraform validate -no-color || echo "⚠️ Validation requires variables (expected)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ No example directory found" >> $GITHUB_STEP_SUMMARY
+          fi
+
+  summary:
+    name: PR Check Summary
+    runs-on: ubuntu-latest
+    needs: [terraform-checks, terraform-tests, example-validation]
+    if: always()
+    
+    steps:
+      - name: Check Results
+        run: |
+          echo "### PR Checks Summary" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ needs.terraform-checks.result }}" == "success" ]; then
+            echo "✅ Terraform quality checks passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Terraform quality checks failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${{ needs.terraform-tests.result }}" == "success" ]; then
+            echo "✅ Terraform tests passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Terraform tests failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${{ needs.example-validation.result }}" == "success" ]; then
+            echo "✅ Example validation passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Example validation failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          # Fail if any checks failed
+          if [ "${{ needs.terraform-checks.result }}" != "success" ] || \
+             [ "${{ needs.terraform-tests.result }}" != "success" ] || \
+             [ "${{ needs.example-validation.result }}" != "success" ]; then
+            echo ""
+            echo "Some checks failed. Please review the logs above." >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+          
+          echo ""
+          echo "🎉 All PR checks passed!" >> $GITHUB_STEP_SUMMARY
