@@ -1,0 +1,84 @@
+name: Add DNS Record
+
+on:
+  workflow_dispatch:
+    inputs:
+      domain:
+        description: 'Domain name (e.g., sdsdeliver.io)'
+        required: true
+        type: string
+      record_name:
+        description: 'DNS record name (e.g., _github-pages-challenge-sdsdeliverio)'
+        required: true
+        type: string
+      record_type:
+        description: 'DNS record type'
+        required: true
+        type: choice
+        options:
+          - TXT
+          - A
+          - AAAA
+          - CNAME
+          - MX
+        default: 'TXT'
+      record_value:
+        description: 'DNS record value/content'
+        required: true
+        type: string
+      ttl:
+        description: 'TTL (1 for auto)'
+        required: false
+        type: number
+        default: 1
+      proxied:
+        description: 'Proxied through Cloudflare'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  add-record:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Zone ID
+        id: get-zone
+        run: |
+          ZONE_ID=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=${{ inputs.domain }}" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -H "Content-Type: application/json" | jq -r '.result[0].id')
+          echo "zone_id=$ZONE_ID" >> $GITHUB_OUTPUT
+          echo "Zone ID: $ZONE_ID"
+
+      - name: Add DNS Record
+        run: |
+          RESPONSE=$(curl -s -X POST "https://api.cloudflare.com/client/v4/zones/${{ steps.get-zone.outputs.zone_id }}/dns_records" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data '{
+              "type": "${{ inputs.record_type }}",
+              "name": "${{ inputs.record_name }}",
+              "content": "${{ inputs.record_value }}",
+              "ttl": ${{ inputs.ttl }},
+              "proxied": ${{ inputs.proxied }},
+              "comment": "Added via GitHub Actions"
+            }')
+          
+          echo "$RESPONSE" | jq .
+          
+          SUCCESS=$(echo "$RESPONSE" | jq -r '.success')
+          if [ "$SUCCESS" != "true" ]; then
+            echo "Failed to add DNS record"
+            exit 1
+          fi
+          
+          echo "✅ DNS record added successfully"
+          echo "Record: ${{ inputs.record_name }}.${{ inputs.domain }}"
+          echo "Type: ${{ inputs.record_type }}"
+          echo "Value: ${{ inputs.record_value }}"
+
+      - name: Verify Record
+        run: |
+          sleep 5
+          echo "Verifying DNS record..."
+          dig +short ${{ inputs.record_name }}.${{ inputs.domain }} ${{ inputs.record_type }}
